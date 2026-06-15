@@ -1,0 +1,276 @@
+<resources>
+    <string name="app_name">Termina Launcher</string>
+
+    <!-- terminal -->
+    <string name="banner_hint">digita /help per i comandi</string>
+    <string name="cmd_not_found">comando non trovato: %1$s — digita /help</string>
+    <string name="help_title_commands">COMANDI DISPONIBILI</string>
+    <string name="help_title_fs">FILE SYSTEM (stile unix)</string>
+    <string name="help_free_text">altro testo avvia l\'app con quel nome (es: chrome)</string>
+
+    <!-- command usage (help column) -->
+    <string name="u_help">/help</string>
+    <string name="u_handbook">/handbook</string>
+    <string name="u_launch">/launch &lt;nome&gt;</string>
+    <string name="u_apps">/apps</string>
+    <string name="u_contacts">/contacts</string>
+    <string name="u_settings">/settings</string>
+    <string name="u_battery">/battery</string>
+    <string name="u_info">/info</string>
+    <string name="u_ip">/ip</string>
+    <string name="u_ram">/ram</string>
+    <string name="u_storage">/storage</string>
+    <string name="u_date">/date</string>
+    <string name="u_uptime">/uptime</string>
+    <string name="u_lang">/lang</string>
+    <string name="u_search">/search &lt;testo&gt;</string>
+    <string name="u_call">/call &lt;num|nome&gt;</string>
+    <string name="u_torch">/torch on|off</string>
+    <string name="u_uninstall">/uninstall &lt;nome&gt;</string>
+    <string name="u_theme">/theme &lt;colore&gt;</string>
+    <string name="u_clear">/clear</string>
+    <string name="u_time">/time</string>
+    <string name="u_reload">/reload</string>
+    <string name="u_config">/config</string>
+
+    <!-- command descriptions (help column) -->
+    <string name="d_help">questa guida</string>
+    <string name="d_handbook">manuale d\'uso</string>
+    <string name="d_launch">avvia app/sezione</string>
+    <string name="d_apps">elenco app (TUI)</string>
+    <string name="d_contacts">rubrica (TUI)</string>
+    <string name="d_settings">impostazioni (TUI)</string>
+    <string name="d_battery">batteria</string>
+    <string name="d_info">info dispositivo</string>
+    <string name="d_ip">indirizzi IP</string>
+    <string name="d_ram">memoria</string>
+    <string name="d_storage">spazio disco</string>
+    <string name="d_date">data e ora</string>
+    <string name="d_uptime">uptime</string>
+    <string name="d_lang">lingua</string>
+    <string name="d_search">ricerca web</string>
+    <string name="d_call">chiama</string>
+    <string name="d_torch">torcia</string>
+    <string name="d_uninstall">disinstalla</string>
+    <string name="d_theme">cambia tema</string>
+    <string name="d_clear">pulisci schermo</string>
+    <string name="d_time">ora corrente</string>
+    <string name="d_reload">ricarica .terminarc</string>
+    <string name="d_config">modifica .terminarc</string>
+
+    <!-- unix help descriptions -->
+    <string name="uh_ls">elenco file</string>
+    <string name="uh_cd">naviga</string>
+    <string name="uh_cat">contenuto file</string>
+    <string name="uh_mk">crea/cancella</string>
+    <string name="uh_cpmv">copia/sposta</string>
+    <string name="uh_nano">editor di testo (TUI)</string>
+    <string name="uh_sudo">accesso completo</string>
+    <string name="uh_alias">elenca/definisci alias</string>
+    <string name="uh_find">cerca file (TUI)</string>
+    <string name="uh_du">uso disco</string>
+    <string name="uh_tree">albero cartelle</string>
+    <string name="uh_source">ricarica .terminarc</string>
+
+    <!-- du / tree -->
+    <string name="du_total">%1$s  totale</string>
+    <string name="tree_truncated">… (output troncato)</string>
+
+    <!-- azioni sui risultati (tap lungo) -->
+    <string name="act_open">apri</string>
+    <string name="act_cd">vai alla cartella</string>
+    <string name="act_share">condividi</string>
+    <string name="act_cancel">annulla</string>
+    <string name="share_via">condividi con…</string>
+    <string name="share_failed">impossibile condividere %1$s</string>
+
+    <!-- ricerca file -->
+    <string name="search_title">FIND</string>
+    <string name="search_usage">uso: find &lt;nome&gt;  ·  find --reindex per ricostruire</string>
+    <string name="search_indexing">indicizzazione… %1$d file</string>
+    <string name="search_building">creazione indice, attendi…</string>
+    <string name="search_footer_idx">indice: %1$d voci</string>
+    <string name="search_footer">%1$d risultati · %2$d indicizzati</string>
+    <string name="search_no_results">nessun risultato per \'%1$s\'</string>
+    <string name="search_reindexing">ricostruzione indice…</string>
+    <string name="search_reindexed">indice ricostruito: %1$d voci</string>
+    <string name="search_cd">cd %1$s</string>
+
+    <!-- handbook / manuale -->
+    <string name="manual_title">MANUALE</string>
+    <string name="manual_footer">tocca ESC per tornare</string>
+    <string name="manual_missing">manuale non disponibile</string>
+
+    <!-- aliases / .terminarc -->
+    <string name="alias_usage">uso: alias &lt;nome&gt;=&lt;comando&gt;</string>
+    <string name="unalias_usage">uso: unalias &lt;nome&gt;</string>
+    <string name="alias_none">nessun alias definito</string>
+    <string name="alias_set">alias impostato: %1$s=%2$s</string>
+    <string name="alias_removed">alias rimosso: %1$s</string>
+    <string name="alias_unknown">unalias: %1$s: non trovato</string>
+    <string name="alias_loaded">caricati %1$d alias da .terminarc</string>
+    <string name="rc_help">gli alias stanno in %1$s — modifica con /config (funziona anche dopo sudo)</string>
+
+    <!-- usage errors -->
+    <string name="e_usage_launch">uso: /launch &lt;nome app|settings|wifi|bluetooth|contatti|lingua&gt;</string>
+    <string name="e_usage_search">uso: /search &lt;testo&gt;</string>
+    <string name="e_usage_call">uso: /call &lt;numero|nome contatto&gt;</string>
+    <string name="e_usage_torch">uso: /torch on|off</string>
+    <string name="e_usage_uninstall">uso: /uninstall &lt;nome app&gt;</string>
+    <string name="e_usage_cat">uso: cat &lt;file&gt;</string>
+    <string name="e_usage_head">uso: head &lt;file&gt; [n]</string>
+    <string name="e_usage_tail">uso: tail &lt;file&gt; [n]</string>
+    <string name="e_usage_mkdir">uso: mkdir &lt;dir&gt;</string>
+    <string name="e_usage_touch">uso: touch &lt;file&gt;</string>
+    <string name="e_usage_rm">uso: rm [-r] &lt;file&gt;</string>
+    <string name="e_usage_cp">uso: cp [-r] &lt;sorgente&gt; &lt;destinazione&gt;</string>
+    <string name="e_usage_mv">uso: mv &lt;sorgente&gt; &lt;destinazione&gt;</string>
+    <string name="e_usage_nano">uso: nano &lt;file&gt;</string>
+
+    <!-- launch / apps -->
+    <string name="app_not_found">nessuna app trovata per \'%1$s\'</string>
+    <string name="launching_app">avvio %1$s…</string>
+    <string name="launch_failed">impossibile avviare %1$s</string>
+    <string name="multiple_results">più risultati per \'%1$s\':</string>
+    <string name="multiple_results_hint">specifica meglio il nome</string>
+    <string name="opening_contacts">apro l\'app contatti…</string>
+    <string name="contacts_app_missing">app contatti non trovata</string>
+    <string name="opening">apro %1$s…</string>
+    <string name="open_failed">impossibile aprire %1$s</string>
+    <string name="label_system_settings">impostazioni di sistema</string>
+    <string name="label_wifi_settings">impostazioni Wi-Fi</string>
+    <string name="label_bt_settings">impostazioni Bluetooth</string>
+    <string name="label_locale_settings">impostazioni lingua</string>
+
+    <!-- search / call / torch / uninstall / theme -->
+    <string name="searching">cerco \'%1$s\'…</string>
+    <string name="no_browser">nessun browser disponibile</string>
+    <string name="contacts_permission_missing">permesso contatti mancante: apri /contacts per concederlo</string>
+    <string name="contact_not_found">nessun contatto trovato per \'%1$s\'</string>
+    <string name="contact_found">trovato: %1$s (%2$s)</string>
+    <string name="dialing">compongo %1$s…</string>
+    <string name="no_dialer">nessuna app telefono</string>
+    <string name="no_torch">nessuna torcia disponibile</string>
+    <string name="torch_on">torcia accesa</string>
+    <string name="torch_off">torcia spenta</string>
+    <string name="torch_error">errore torcia: %1$s</string>
+    <string name="uninstall_requested">richiesta disinstallazione di %1$s…</string>
+    <string name="uninstall_failed">impossibile disinstallare %1$s</string>
+    <string name="themes_list">temi: %1$s</string>
+    <string name="theme_set">tema impostato: %1$s</string>
+
+    <!-- sudo / file access -->
+    <string name="sudo_already">accesso completo ai file già attivo (home: %1$s)</string>
+    <string name="sudo_unavailable">non disponibile su questa versione di android</string>
+    <string name="sudo_grant_hint">concedi \'accesso a tutti i file\' e torna qui</string>
+    <string name="sudo_settings_failed">impossibile aprire le impostazioni di accesso ai file</string>
+    <string name="sudo_granted">accesso completo attivo — home: %1$s</string>
+    <string name="limited_access_hint">(accesso limitato alla cartella dell\'app — digita sudo per sbloccare)</string>
+
+    <!-- file system -->
+    <string name="fs_no_such">%1$s: %2$s: file o directory non esistente</string>
+    <string name="fs_not_dir">%1$s: %2$s: non è una directory</string>
+    <string name="fs_denied">%1$s: %2$s: permesso negato</string>
+    <string name="fs_is_dir">%1$s: %2$s: è una directory</string>
+    <string name="fs_empty">(vuoto)</string>
+    <string name="fs_file_empty">(file vuoto)</string>
+    <string name="fs_too_big">cat: %1$s: file troppo grande (%2$s)</string>
+    <string name="fs_read_error">errore di lettura: %1$s</string>
+    <string name="fs_lines_omitted">… (%1$d righe omesse)</string>
+    <string name="fs_mkdir_exists">mkdir: %1$s: esiste già</string>
+    <string name="fs_mkdir_created">directory creata: %1$s</string>
+    <string name="fs_mkdir_failed">mkdir: impossibile creare %1$s</string>
+    <string name="fs_touch_updated">aggiornato: %1$s</string>
+    <string name="fs_touch_created">file creato: %1$s</string>
+    <string name="fs_touch_failed">touch: impossibile creare %1$s</string>
+    <string name="fs_rm_home">rm: non puoi cancellare la home</string>
+    <string name="fs_rm_cwd">rm: non puoi cancellare la directory corrente</string>
+    <string name="fs_rm_isdir">rm: %1$s: è una directory (usa rm -r)</string>
+    <string name="fs_rm_done">cancellato: %1$s</string>
+    <string name="fs_rm_failed">rm: errore cancellando %1$s</string>
+    <string name="fs_cp_isdir">cp: %1$s: è una directory (usa cp -r)</string>
+    <string name="fs_cp_done">copiato: %1$s -&gt; %2$s</string>
+    <string name="fs_cp_error">cp: errore: %1$s</string>
+    <string name="fs_mv_exists">mv: %1$s: esiste già</string>
+    <string name="fs_mv_done">spostato: %1$s -&gt; %2$s</string>
+    <string name="fs_mv_error">mv: errore: %1$s</string>
+    <string name="nano_is_dir">nano: %1$s: è una directory</string>
+    <string name="nano_saved">nano: salvato %1$s</string>
+
+    <!-- system info -->
+    <string name="bat_status">"stato:       %1$s"</string>
+    <string name="bat_temp">"temperatura: %1$s °C"</string>
+    <string name="bat_volt">"voltaggio:   %1$s V"</string>
+    <string name="bat_charging">in carica</string>
+    <string name="bat_full">carica completa</string>
+    <string name="bat_discharging">in scarica</string>
+    <string name="bat_not_charging">non in carica</string>
+    <string name="bat_unknown">sconosciuto</string>
+    <string name="info_model">"modello:     %1$s"</string>
+    <string name="info_device">"device:      %1$s"</string>
+    <string name="info_android">"android:     %1$s (API %2$d)"</string>
+    <string name="info_patch">"patch sic.:  %1$s"</string>
+    <string name="info_build">"build:       %1$s"</string>
+    <string name="info_cpu">"cpu:         %1$s"</string>
+    <string name="info_screen">"schermo:     %1$s"</string>
+    <string name="ip_none">nessuna interfaccia di rete attiva</string>
+    <string name="pct_used">"[%1$s] %2$d%% in uso"</string>
+    <string name="mem_total">"totale:      %1$s"</string>
+    <string name="mem_available">"disponibile: %1$s"</string>
+    <string name="disk_free">"libero:      %1$s"</string>
+    <string name="date_tz">timezone: %1$s</string>
+    <string name="time_now">"ora: %1$s"</string>
+
+    <!-- template .terminarc di default (creato al primo avvio) -->
+    <string name="rc_template">"# .terminarc — configurazione di Termina Launcher\n# Definisci qui gli alias (stile bash/zsh). Ricaricato quando salvi il file.\n#\n# Sintassi:  alias &lt;nome&gt;=&lt;comando&gt;\n# Esempi:\n# alias g=chrome\n# alias ll=ls -l\n# alias home=cd ~\n# alias bt=/bluetooth\n# alias wifi=/launch wifi\n"</string>
+    <string name="uptime_fmt">acceso da: %1$dg %2$dh %3$dm</string>
+    <string name="lang_fmt">lingua di sistema: %1$s (%2$s)</string>
+
+    <!-- TUI screens -->
+    <string name="apps_title">APP</string>
+    <string name="apps_footer">%1$d/%2$d app</string>
+    <string name="filter_label">"filtro: "</string>
+    <string name="contacts_title">CONTATTI</string>
+    <string name="contacts_footer">%1$d contatti · tap = chiama</string>
+    <string name="contacts_perm_missing">permesso READ_CONTACTS mancante</string>
+    <string name="contacts_grant">&gt; [CONCEDI PERMESSO]</string>
+    <string name="settings_title">IMPOSTAZIONI</string>
+    <string name="settings_footer">termina launcher</string>
+    <string name="sec_launcher">launcher</string>
+    <string name="sec_system">sistema</string>
+    <string name="set_theme">tema: %1$s</string>
+    <string name="set_font">font: %1$s</string>
+    <string name="set_tap_change">tap per cambiare</string>
+    <string name="font_small">piccolo</string>
+    <string name="font_normal">normale</string>
+    <string name="font_large">grande</string>
+    <string name="set_sys_detail">impostazioni android</string>
+    <string name="set_wifi">wi-fi</string>
+    <string name="set_wifi_detail">rete wireless</string>
+    <string name="set_bt">bluetooth</string>
+    <string name="set_bt_detail">dispositivi</string>
+    <string name="set_lang">lingua</string>
+    <string name="set_lang_detail">locale di sistema</string>
+    <string name="set_display">display</string>
+    <string name="set_display_detail">luminosità, timeout</string>
+    <string name="set_home">launcher predefinito</string>
+    <string name="set_home_detail">imposta termina come home</string>
+    <string name="set_config">modifica .terminarc</string>
+    <string name="set_config_detail">alias e configurazione</string>
+
+    <!-- loading indicators -->
+    <string name="loading_apps">carico le app…</string>
+    <string name="loading_contacts">carico i contatti…</string>
+
+    <!-- recovery gesture (hold center to restart) -->
+    <string name="recovery_title">RECOVERY</string>
+    <string name="recovery_countdown">riavvio tra %1$ds — rilascia per annullare</string>
+
+    <!-- editor -->
+    <string name="ed_existing">file esistente</string>
+    <string name="ed_new">nuovo file</string>
+    <string name="ed_saved">salvato (%1$d byte)</string>
+    <string name="ed_error">errore: %1$s</string>
+    <string name="ed_save">[^O salva]</string>
+    <string name="ed_exit">[^X esci]</string>
+</resources>
