@@ -1,171 +1,172 @@
-# Termina Launcher — Manuale d'uso
+# Termina Launcher — User Manual
 
-Termina Launcher è un launcher Android in stile terminale di testo. Tutto si fa
-digitando nel prompt `termina:~$`, oppure toccando le voci nelle schermate TUI.
-Questo manuale elenca **ogni azione possibile**.
+Termina Launcher is a text-terminal-style Android launcher. Everything is done by
+typing at the `termina:~$` prompt, or by tapping entries in the TUI screens.
+This manual lists **every possible action**.
 
-L'interfaccia segue la lingua del telefono (Italiano o Inglese).
-
----
-
-## 1. Come funziona il prompt
-
-Nel terminale puoi digitare tre tipi di input:
-
-1. **Comandi launcher** che iniziano con `/` (es. `/battery`, `/apps`).
-2. **Comandi in stile unix** senza `/` (es. `ls`, `cd`, `find`).
-3. **Testo libero**: qualsiasi altra cosa viene interpretata come *nome di un'app
-   da avviare* (es. scrivere `chrome` apre Chrome).
-
-Suggerimento: mentre digiti un comando che inizia con `/`, sotto al prompt compaiono
-i suggerimenti dei comandi disponibili — toccali per completarli.
-
-Digita `/help` in qualsiasi momento per la lista rapida.
+The interface follows the phone language (English or Italian).
 
 ---
 
-## 2. Comandi launcher (`/`)
+## 1. How the prompt works
 
-| Comando | Cosa fa |
+At the terminal you can type three kinds of input:
+
+1. **Launcher commands** that start with `/` (e.g. `/battery`, `/apps`).
+2. **Unix-style commands** without `/` (e.g. `ls`, `cd`, `find`).
+3. **Free text**: anything else is interpreted as the *name of an app to
+   launch* (e.g. typing `chrome` opens Chrome).
+
+Tip: while you type a command that starts with `/`, suggestions for the available
+commands appear below the prompt — tap them to complete.
+
+Type `/help` at any time for the quick list.
+
+---
+
+## 2. Launcher commands (`/`)
+
+| Command | What it does |
 |---|---|
-| `/help` | Mostra la guida con tutti i comandi |
-| `/launch <nome>` | Avvia un'app o una sezione (vedi sotto) |
-| `/apps` | Apre l'elenco TUI delle app installate |
-| `/contacts` | Apre la rubrica TUI |
-| `/settings` | Apre le impostazioni del launcher (TUI) |
-| `/battery` | Stato batteria: livello, ricarica, temperatura, voltaggio |
-| `/info` | Info dispositivo: modello, Android, CPU, schermo… |
-| `/ip` | Indirizzi IP delle interfacce di rete |
-| `/ram` | Uso della memoria |
-| `/storage` | Spazio di archiviazione |
-| `/date` | Data e ora complete + fuso orario |
-| `/time` | Solo l'ora corrente |
-| `/uptime` | Da quanto tempo è acceso il dispositivo |
-| `/lang` | Lingua di sistema + apre le impostazioni lingua |
-| `/search <testo>` | Ricerca **sul web** del testo |
-| `/call <numero\|nome>` | Compone un numero (anche cercando un contatto per nome) |
-| `/torch on\|off` | Accende/spegne la torcia (senza argomento: alterna) |
-| `/uninstall <nome>` | Avvia la disinstallazione di un'app |
-| `/theme <colore>` | Cambia tema: `green`, `amber`, `cyan`, `white` |
-| `/reload` | Ricarica gli alias da `.terminarc` |
-| `/clear` | Pulisce lo schermo (ristampa il banner) |
-| `/wifi` | Apre le impostazioni Wi-Fi |
-| `/bt` o `/bluetooth` | Apre le impostazioni Bluetooth |
+| `/help` | Show the guide with every command |
+| `/launch <name>` | Launch an app or a section (see below) |
+| `/apps` | Open the TUI list of installed apps |
+| `/contacts` | Open the TUI address book |
+| `/settings` | Open the launcher settings (TUI) |
+| `/battery` | Battery status: level, charging, temperature, voltage |
+| `/info` | Device info: model, Android, CPU, screen… |
+| `/ip` | IP addresses of the network interfaces |
+| `/ram` | Memory usage |
+| `/storage` | Storage space |
+| `/date` | Full date and time + time zone |
+| `/time` | Current time only |
+| `/uptime` | How long the device has been on |
+| `/lang` | System language + opens the language settings |
+| `/search <text>` | Search the **web** for the text |
+| `/call <number\|name>` | Dial a number (also by looking up a contact by name) |
+| `/torch on\|off` | Turn the flashlight on/off (no argument: toggle) |
+| `/uninstall <name>` | Start uninstalling an app |
+| `/theme <color>` | Change theme: `green`, `amber`, `cyan`, `white` |
+| `/reload` | Reload aliases from `.terminarc` |
+| `/clear` | Clear the screen (reprints the banner) |
+| `/wifi` | Open the Wi-Fi settings |
+| `/bt` or `/bluetooth` | Open the Bluetooth settings |
 
-### `/launch` — destinazioni speciali
-Oltre al nome di un'app, `/launch` accetta:
+### `/launch` — special destinations
+Besides an app name, `/launch` accepts:
 `settings`, `wifi`, `bluetooth`, `lingua`/`language`, `contatti`/`contacts`.
-Esempi: `/launch wifi`, `/launch settings`, `/launch whatsapp`.
+Examples: `/launch wifi`, `/launch settings`, `/launch whatsapp`.
 
 ---
 
-## 3. Comandi file system (stile unix)
+## 3. File system commands (unix-style)
 
-Si digitano senza `/`. Il prompt mostra la cartella corrente (es. `termina:~/Download$`).
+Typed without `/`. The prompt shows the current folder (e.g. `termina:~/Download$`).
 
-| Comando | Cosa fa |
+| Command | What it does |
 |---|---|
-| `ls [path]` | Elenca i file (cartelle con `/` finale) |
-| `ll [path]` | Elenco dettagliato (permessi, dimensione, data) |
-| `la [path]` | Come `ll` ma include i file nascosti |
-| `cd <dir>` | Entra in una cartella (`cd ~` torna alla home, `cd ..` sale) |
-| `pwd` | Mostra il percorso assoluto corrente |
-| `cat <file>` | Mostra il contenuto di un file di testo |
-| `head <file> [n]` | Prime n righe (default 10) |
-| `tail <file> [n]` | Ultime n righe (default 10) |
-| `mkdir <dir>` | Crea una cartella |
-| `touch <file>` | Crea un file vuoto (o ne aggiorna la data) |
-| `rm <file>` | Cancella un file |
-| `rm -r <dir>` | Cancella una cartella e il suo contenuto |
-| `cp [-r] <orig> <dest>` | Copia file (o cartella con `-r`) |
-| `mv <orig> <dest>` | Sposta o rinomina |
-| `nano <file>` | Apre l'editor di testo (vedi sezione 5) |
-| `find <nome> [--reindex]` | Cerca file per nome (vedi sezione 6) |
-| `du [-n] [path]` | Uso disco per voce, ordinato per dimensione (`-n` = per nome) |
-| `tree [-L n] [path]` | Albero delle cartelle (`-L n` limita la profondità, default 2) |
-| `sudo` | Sblocca l'accesso a **tutti** i file (vedi sezione 4) |
-| `source` | Ricarica gli alias da `.terminarc` (come `/reload`) |
-| `alias` | Elenca gli alias definiti |
-| `alias <nome>=<comando>` | Definisce un alias per la sessione |
-| `unalias <nome>` | Rimuove un alias |
+| `ls [path]` | List files (folders end with `/`) |
+| `ll [path]` | Detailed list (permissions, size, date) |
+| `la [path]` | Like `ll` but includes hidden files |
+| `cd <dir>` | Enter a folder (`cd ~` back home, `cd ..` up) |
+| `pwd` | Show the current absolute path |
+| `cat <file>` | Show the contents of a text file |
+| `head <file> [n]` | First n lines (default 10) |
+| `tail <file> [n]` | Last n lines (default 10) |
+| `mkdir <dir>` | Create a folder |
+| `touch <file>` | Create an empty file (or update its date) |
+| `rm <file>` | Delete a file |
+| `rm -r <dir>` | Delete a folder and its contents |
+| `cp [-r] <src> <dst>` | Copy a file (or folder with `-r`) |
+| `mv <src> <dst>` | Move or rename |
+| `nano <file>` | Open the text editor (see section 5) |
+| `find <name> [--reindex]` | Search files by name (see section 6) |
+| `du [-n] [path]` | Disk usage per entry, sorted by size (`-n` = by name) |
+| `tree [-L n] [path]` | Folder tree (`-L n` limits the depth, default 2) |
+| `sudo` | Unlock access to **all** files (see section 4) |
+| `source` | Reload aliases from `.terminarc` (like `/reload`) |
+| `alias` | List the defined aliases |
+| `alias <name>=<command>` | Define an alias for the session |
+| `unalias <name>` | Remove an alias |
 
-I percorsi accettano `~` (home), `..` (cartella superiore) e percorsi assoluti `/...`.
-
----
-
-## 4. Accesso ai file e `sudo`
-
-Per impostazione predefinita il launcher vede solo la propria cartella privata.
-Il comando **`sudo`** apre le impostazioni di sistema per concedere l'accesso a
-*tutti i file*: una volta concesso, la home (`~`) diventa l'intera memoria del
-dispositivo (`/storage/emulated/0`) e tornando nell'app l'accesso è attivo.
+Paths accept `~` (home), `..` (parent folder) and absolute paths `/...`.
 
 ---
 
-## 5. Editor di testo (`nano`)
+## 4. File access and `sudo`
 
-`nano <file>` apre un editor a schermo intero, ispirato a nano:
-- la barra in alto mostra il file (con `*` se ci sono modifiche non salvate);
-- **`[^O salva]`** salva il file;
-- **`[^X esci]`** salva (se modificato) ed esce;
-- il tasto *indietro* esce senza forzare il salvataggio.
-
-Puoi usarlo per creare/modificare qualsiasi file di testo, incluso `.terminarc`.
+By default the launcher only sees its own private folder.
+The **`sudo`** command opens the system settings to grant access to
+*all files*: once granted, the home (`~`) becomes the entire device
+storage (`/storage/emulated/0`) and access is active when you return to the app.
 
 ---
 
-## 6. Ricerca file (`find`)
+## 5. Text editor (`nano`)
 
-`find <nome>` apre una schermata TUI e cerca i file/cartelle per nome.
+`nano <file>` opens a full-screen editor, inspired by nano:
+- the top bar shows the file (with `*` if there are unsaved changes);
+- **`[^O save]`** saves the file;
+- **`[^X exit]`** saves (if modified) and exits;
+- the *back* key exits without forcing a save.
 
-- Alla prima ricerca viene costruito un **indice** (in background) che viene
-  salvato e riusato: le ricerche successive sono istantanee.
-- L'indice si **aggiorna da solo** quando rileva cambiamenti, e viene
-  pre-riscaldato all'avvio dell'app (con un limite di frequenza).
-- Forzare la ricostruzione: `find --reindex` (o `find -r`).
-- Nel campo `find:` puoi affinare la ricerca in tempo reale.
-- I risultati sono ordinati per pertinenza (nome esatto → prefisso → contenuto).
-
-### Azioni sui risultati
-- **Tap singolo**: se è un file lo apre con l'app di sistema; se è una cartella
-  ci entra (`cd`) e torna al terminale.
-- **Tap lungo**: apre un menu con:
-  - **apri** — apre il file / entra nella cartella;
-  - **vai alla cartella** — `cd` nella posizione e torna al terminale;
-  - **condividi** — condivide il file con un'altra app (solo file);
-  - **annulla**.
+You can use it to create/edit any text file, including `.terminarc`.
 
 ---
 
-## 7. Schermate TUI
+## 6. File search (`find`)
 
-Oltre al terminale, ci sono schermate a tutto schermo navigabili col tocco. Il
-tasto *indietro* (o `ESC` nel footer) torna al terminale.
+`find <name>` opens a TUI screen and searches files/folders by name.
 
-- **App** (`/apps`): elenco app con filtro; tocca per avviare.
-- **Contatti** (`/contacts`): rubrica con filtro; tocca un contatto per chiamarlo.
-  Alla prima apertura chiede il permesso di leggere i contatti.
-- **Impostazioni** (`/settings`): tema, dimensione font, e scorciatoie alle
-  impostazioni di sistema (Wi-Fi, Bluetooth, lingua, display, launcher predefinito).
-- **Editor** (`nano`): vedi sezione 5.
-- **Ricerca** (`find`): vedi sezione 6.
+- On the first search an **index** is built (in the background) which is
+  saved and reused: later searches are instant.
+- The index **updates itself** when it detects changes, and is
+  pre-warmed at app startup (with a rate limit).
+- Force a rebuild: `find --reindex` (or `find -r`).
+- In the `find:` field you can refine the search in real time.
+- Results are sorted by relevance (exact name → prefix → contents).
+
+### Actions on results
+- **Single tap**: if it is a file it opens with the system app; if it is a folder
+  it enters it (`cd`) and returns to the terminal.
+- **Long tap**: opens a menu with:
+  - **open** — open the file / enter the folder;
+  - **go to folder** — `cd` to the location and return to the terminal;
+  - **share** — share the file with another app (files only);
+  - **cancel**.
 
 ---
 
-## 8. Alias e `.terminarc`
+## 7. TUI screens
 
-Come in bash/zsh, puoi definire **alias** per i comandi.
+Besides the terminal, there are full-screen screens navigated by touch. The
+*back* key (or `ESC` in the footer) returns to the terminal.
 
-- File di configurazione: `~/.terminarc` (creato al primo avvio con esempi).
-  Modificalo con `nano ~/.terminarc` — il percorso esatto è mostrato in `/help`.
-- Sintassi: `alias nome=comando` (le righe con `#` sono commenti).
-- Gli alias vengono **ricaricati automaticamente** quando salvi il file, oppure
-  con `source` / `/reload`.
-- Gli alias possono richiamare altri alias (espansione a catena, con protezione
-  anti-loop).
-- Puoi anche definirli al volo per la sessione: `alias g=chrome`.
+- **Apps** (`/apps`): app list with a filter; tap to launch.
+- **Contacts** (`/contacts`): address book with a filter; tap a contact to call.
+  On first open it asks for permission to read contacts.
+- **Settings** (`/settings`): theme, font size, and shortcuts to the
+  system settings (Wi-Fi, Bluetooth, language, display, default launcher).
+- **Editor** (`nano`): see section 5.
+- **Search** (`find`): see section 6.
+- **Handbook** (`/handbook`): this manual, with a **preview** tab and a
+  **source** tab (the raw markdown).
 
-Esempi:
+---
+
+## 8. Aliases and `.terminarc`
+
+As in bash/zsh, you can define **aliases** for commands.
+
+- Config file: `~/.terminarc` (created on first launch with examples).
+  Edit it with `nano ~/.terminarc` — the exact path is shown in `/help`.
+- Syntax: `alias name=command` (lines with `#` are comments).
+- Aliases are **reloaded automatically** when you save the file, or with
+  `source` / `/reload`.
+- Aliases can call other aliases (chained expansion, with loop protection).
+- You can also define them on the fly for the session: `alias g=chrome`.
+
+Examples:
 ```
 alias g=chrome
 alias ll=ls -l
@@ -176,21 +177,21 @@ alias web=/search
 
 ---
 
-## 9. Personalizzazione
+## 9. Customization
 
-- **Temi**: `green` (default), `amber`, `cyan`, `white`. Cambia con
-  `/theme <colore>` o da Impostazioni. La scelta viene ricordata.
-- **Dimensione testo**: piccola / normale / grande, da Impostazioni.
-- **Lingua**: segue automaticamente la lingua del telefono (Italiano/Inglese).
-- **Launcher predefinito**: da Impostazioni puoi impostare Termina come schermata
-  Home del telefono.
+- **Themes**: `green` (default), `amber`, `cyan`, `white`. Change with
+  `/theme <color>` or from Settings. The choice is remembered.
+- **Text size**: small / normal / large, from Settings.
+- **Language**: automatically follows the phone language (English/Italian).
+- **Default launcher**: from Settings you can set Termina as the phone Home
+  screen.
 
 ---
 
-## 10. Scorciatoie utili
+## 10. Handy shortcuts
 
-- `chrome` (testo libero) → avvia l'app per nome.
-- `/launch wifi` → impostazioni Wi-Fi al volo.
-- `find <nome>` → trova un file ovunque e aprilo o condividilo.
-- `nano appunti.txt` → crea al volo una nota di testo.
-- `du` → scopri cosa occupa spazio; `tree` → guarda la struttura delle cartelle.
+- `chrome` (free text) → launch the app by name.
+- `/launch wifi` → Wi-Fi settings on the fly.
+- `find <name>` → find a file anywhere and open or share it.
+- `nano notes.txt` → create a text note on the fly.
+- `du` → discover what takes up space; `tree` → look at the folder structure.

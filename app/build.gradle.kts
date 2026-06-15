@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.terminalauncher"
+    namespace = "com.hooloovoochimico.terminalauncher"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.example.terminalauncher"
+        applicationId = "com.hooloovoochimico.terminalauncher"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

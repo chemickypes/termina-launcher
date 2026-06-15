@@ -97,9 +97,13 @@
     <string name="search_cd">cd %1$s</string>
 
     <!-- handbook / manuale -->
+    <!-- asset file for the localized handbook (not user-visible) -->
+    <string name="handbook_asset">handbook.md</string>
     <string name="manual_title">HANDBOOK</string>
     <string name="manual_footer">tap ESC to go back</string>
     <string name="manual_missing">handbook not available</string>
+    <string name="manual_tab_preview">preview</string>
+    <string name="manual_tab_source">source</string>
 
     <!-- aliases / .terminarc -->
     <string name="alias_usage">usage: alias &lt;name&gt;=&lt;command&gt;</string>
