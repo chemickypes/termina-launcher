@@ -160,10 +160,6 @@ Strings live in `res/values/` (English, base) and `res/values-it/` (Italian);
 Android picks the right one automatically. Adding a language is just a new
 `values-xx/` folder (plus a `handbook-xx.md` for the manual).
 
-## Roadmap
-
-Future ideas are tracked in [`new_ideas.md`](new_ideas.md).
-
 ## License
 
 Copyright (C) 2026 Angelo Moroni
