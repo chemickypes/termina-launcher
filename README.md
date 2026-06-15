@@ -1,5 +1,7 @@
 # Termina Launcher
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
 An Android home-screen launcher styled as a **terminal**. Type commands instead of
 tapping icons: launch apps by name, browse a TUI app/contact list, run unix-like file
 commands, search files, edit a `.terminarc` config, and more.
@@ -52,3 +54,13 @@ app/src/main/java/com/example/terminalauncher/
 
 The in-app user manual lives in `app/src/main/assets/handbook.md` (read it with
 `/handbook`).
+
+## License
+
+Copyright (C) 2026 Angelo Moroni
+
+This program is free software: you can redistribute it and/or modify it under the terms
+of the **GNU General Public License v3.0** as published by the Free Software Foundation.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the [LICENSE](LICENSE) file for the full text.
