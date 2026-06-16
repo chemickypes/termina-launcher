@@ -939,8 +939,8 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
           err(R.string.contact_not_found, arg)
           return
         }
-        out(str(R.string.contact_found, match.name, match.phone))
-        match.phone
+        out(str(R.string.contact_found, match.name, match.primaryPhone))
+        match.primaryPhone
       } else arg
     dial(number)
   }

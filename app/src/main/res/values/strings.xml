@@ -258,6 +258,10 @@
     <string name="contacts_footer">%1$d contacts · tap = call</string>
     <string name="contacts_perm_missing">READ_CONTACTS permission missing</string>
     <string name="contacts_grant">&gt; [GRANT PERMISSION]</string>
+    <string name="contacts_more_numbers">%1$s  (+%2$d)</string>
+    <string name="contacts_pick_number">pick a number to call</string>
+    <string name="contacts_phone_line">%1$s · %2$s</string>
+    <string name="contacts_cancel">cancel</string>
     <string name="settings_title">SETTINGS</string>
     <string name="settings_footer">termina launcher</string>
     <string name="sec_launcher">launcher</string>

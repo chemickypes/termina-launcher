@@ -22,9 +22,12 @@ import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.hooloovoochimico.terminalauncher.R
 import com.hooloovoochimico.terminalauncher.system.ContactEntry
@@ -55,6 +59,8 @@ fun ContactsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
   var hasPermission by remember { mutableStateOf(vm.contactsRepository.hasPermission()) }
   val contacts = vm.contactsList
   var filter by remember { mutableStateOf("") }
+  // contatto selezionato con più numeri: mostra il sotto-menù per scegliere quale chiamare
+  var picking by remember { mutableStateOf<ContactEntry?>(null) }
 
   val permissionLauncher =
     rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -63,11 +69,17 @@ fun ContactsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
     }
 
   LaunchedEffect(hasPermission) { if (hasPermission) vm.loadContacts() }
-  BackHandler(onBack = onBack)
+  // back: prima chiude l'eventuale sotto-menù dei numeri, poi esce dalla schermata
+  BackHandler { if (picking != null) picking = null else onBack() }
 
   val visible: List<ContactEntry> =
     if (filter.isBlank()) contacts
-    else contacts.filter { it.name.contains(filter.trim(), ignoreCase = true) }
+    else
+      contacts.filter { c ->
+        val q = filter.trim()
+        c.name.contains(q, ignoreCase = true) ||
+          c.phones.any { it.number.contains(q, ignoreCase = true) }
+      }
 
   TuiFrame(
     title = stringResource(R.string.contacts_title),
@@ -121,12 +133,77 @@ fun ContactsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
         if (vm.contactsLoading && contacts.isEmpty()) {
           item { TuiLoading(stringResource(R.string.loading_contacts)) }
         }
-        itemsIndexed(visible, key = { _, c -> c.name + c.phone }) { index, contact ->
-          TuiRow(index = index + 1, text = contact.name, detail = contact.phone) {
-            vm.dial(contact.phone)
+        itemsIndexed(visible, key = { _, c -> c.name + c.primaryPhone }) { index, contact ->
+          val detail =
+            if (contact.hasMultiple)
+              stringResource(
+                R.string.contacts_more_numbers,
+                contact.primaryPhone,
+                contact.phones.size - 1,
+              )
+            else contact.primaryPhone
+          TuiRow(index = index + 1, text = contact.name, detail = detail) {
+            // un solo numero → chiama subito; più numeri → apri il sotto-menù
+            if (contact.hasMultiple) picking = contact else vm.dial(contact.primaryPhone)
           }
         }
       }
+    }
+  }
+
+  picking?.let { contact ->
+    PhoneMenu(
+      contact = contact,
+      onPick = { number ->
+        picking = null
+        vm.dial(number)
+      },
+      onDismiss = { picking = null },
+    )
+  }
+}
+
+/** Sotto-menù a comparsa: elenca tutti i numeri di un contatto, tap = chiama. */
+@Composable
+private fun PhoneMenu(contact: ContactEntry, onPick: (String) -> Unit, onDismiss: () -> Unit) {
+  val palette = LocalTermPalette.current
+  Box(
+    modifier =
+      Modifier.fillMaxSize().background(palette.bg.copy(alpha = 0.85f)).clickable {
+        onDismiss()
+      },
+    contentAlignment = Alignment.BottomStart,
+  ) {
+    Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+      Text(
+        text = "┌─[ " + contact.name + " ]",
+        color = palette.accent,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.bodyLarge,
+      )
+      Text(
+        text = "│ " + stringResource(R.string.contacts_pick_number),
+        color = palette.dim,
+        style = MaterialTheme.typography.bodyMedium,
+      )
+      contact.phones.forEach { phone ->
+        Text(
+          text = "│ > " + stringResource(R.string.contacts_phone_line, phone.label, phone.number),
+          color = palette.fg,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          style = MaterialTheme.typography.bodyLarge,
+          modifier =
+            Modifier.fillMaxWidth().clickable { onPick(phone.number) }.padding(vertical = 8.dp),
+        )
+      }
+      Text(
+        text = "│ > " + stringResource(R.string.contacts_cancel),
+        color = palette.dim,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onDismiss).padding(vertical = 8.dp),
+      )
     }
   }
 }

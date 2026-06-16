@@ -258,6 +258,10 @@
     <string name="contacts_footer">%1$d contatti · tap = chiama</string>
     <string name="contacts_perm_missing">permesso READ_CONTACTS mancante</string>
     <string name="contacts_grant">&gt; [CONCEDI PERMESSO]</string>
+    <string name="contacts_more_numbers">%1$s  (+%2$d)</string>
+    <string name="contacts_pick_number">scegli un numero da chiamare</string>
+    <string name="contacts_phone_line">%1$s · %2$s</string>
+    <string name="contacts_cancel">annulla</string>
     <string name="settings_title">IMPOSTAZIONI</string>
     <string name="settings_footer">termina launcher</string>
     <string name="sec_launcher">launcher</string>
