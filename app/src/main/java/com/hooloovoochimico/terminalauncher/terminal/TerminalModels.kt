@@ -39,6 +39,7 @@ enum class TermScreen {
   SEARCH,
   MANUAL,
   VIEWER,
+  HISTORY,
 }
 
 data class CommandSpec(
@@ -71,6 +72,7 @@ val COMMANDS =
     CommandSpec("/time", R.string.u_time, R.string.d_time),
     CommandSpec("/reload", R.string.u_reload, R.string.d_reload),
     CommandSpec("/config", R.string.u_config, R.string.d_config),
+    CommandSpec("/history", R.string.u_history, R.string.d_history),
     CommandSpec("/clear", R.string.u_clear, R.string.d_clear),
   )
 

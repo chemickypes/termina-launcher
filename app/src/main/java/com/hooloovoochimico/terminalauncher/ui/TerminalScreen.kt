@@ -66,6 +66,14 @@ fun TerminalScreen(vm: TerminalViewModel) {
     if (vm.lines.isNotEmpty()) listState.animateScrollToItem(vm.lines.size - 1)
   }
 
+  // comando precaricato dalla history ("modifica"): riempie il campo e lo azzera nel VM
+  LaunchedEffect(vm.pendingInput) {
+    vm.pendingInput?.let {
+      input = it
+      vm.clearPendingInput()
+    }
+  }
+
   Column(modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp)) {
     LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxWidth()) {
       items(vm.lines) { line ->

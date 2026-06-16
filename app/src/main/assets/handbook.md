@@ -48,6 +48,7 @@ Type `/help` at any time for the quick list.
 | `/uninstall <name>` | Start uninstalling an app |
 | `/theme <color>` | Change theme: `green`, `amber`, `cyan`, `white` |
 | `/reload` | Reload aliases from `.terminarc` |
+| `/history` | Recent commands (TUI): tap to re-run, long-press to edit |
 | `/clear` | Clear the screen (reprints the banner) |
 | `/wifi` | Open the Wi-Fi settings |
 | `/bt` or `/bluetooth` | Open the Bluetooth settings |

@@ -32,6 +32,7 @@
     <string name="u_time">/time</string>
     <string name="u_reload">/reload</string>
     <string name="u_config">/config</string>
+    <string name="u_history">/history</string>
 
     <!-- command descriptions (help column) -->
     <string name="d_help">this guide</string>
@@ -57,6 +58,7 @@
     <string name="d_time">current time</string>
     <string name="d_reload">reload .terminarc</string>
     <string name="d_config">edit .terminarc</string>
+    <string name="d_history">command history (TUI)</string>
 
     <!-- unix help descriptions -->
     <string name="uh_ls">list files</string>
@@ -96,6 +98,14 @@
     <string name="search_reindexing">rebuilding index…</string>
     <string name="search_reindexed">index rebuilt: %1$d entries</string>
     <string name="search_cd">cd %1$s</string>
+
+    <!-- command history (TUI) -->
+    <string name="history_title">HISTORY</string>
+    <string name="history_footer">%1$d commands</string>
+    <string name="history_hint">"tap = run · hold = options"</string>
+    <string name="history_empty">no commands yet</string>
+    <string name="hist_run">run</string>
+    <string name="hist_edit">edit</string>
 
     <!-- handbook / manuale -->
     <!-- asset file for the localized handbook (not user-visible) -->

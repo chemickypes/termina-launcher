@@ -130,7 +130,15 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   var fontScale by mutableStateOf(prefs.getFloat("font_scale", 1f))
     private set
 
-  val history = mutableListOf<String>()
+  val history = mutableStateListOf<String>()
+
+  /** Comando precaricato nel campo input del terminale (es. "modifica" dalla history). */
+  var pendingInput by mutableStateOf<String?>(null)
+    private set
+
+  /** Comando selezionato col tap lungo nella schermata history (menu azioni). */
+  var historyActionTarget by mutableStateOf<String?>(null)
+    private set
 
   /** Alias definiti in .terminarc o a runtime (nome -> comando), come in bash/zsh. */
   private val aliases = linkedMapOf<String, String>()
@@ -438,6 +446,46 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
     screen = TermScreen.TERMINAL
   }
 
+  // ─── cronologia comandi (schermata TUI, niente freccette su tastiera) ──────
+
+  private fun openHistory() {
+    historyActionTarget = null
+    screen = TermScreen.HISTORY
+  }
+
+  fun closeHistory() {
+    historyActionTarget = null
+    screen = TermScreen.TERMINAL
+  }
+
+  /** Tap su una voce: torna al terminale e riesegue subito il comando. */
+  fun runFromHistory(cmd: String) {
+    historyActionTarget = null
+    screen = TermScreen.TERMINAL
+    submit(cmd)
+  }
+
+  /** Tap lungo su una voce: apre il menu azioni (esegui / modifica). */
+  fun onHistoryLongPress(cmd: String) {
+    historyActionTarget = cmd
+  }
+
+  fun dismissHistoryAction() {
+    historyActionTarget = null
+  }
+
+  /** "Modifica": precarica il comando nell'input del terminale per correggerlo. */
+  fun editFromHistory(cmd: String) {
+    historyActionTarget = null
+    pendingInput = cmd
+    screen = TermScreen.TERMINAL
+  }
+
+  /** Consumato dal TerminalScreen dopo aver riempito il campo input. */
+  fun clearPendingInput() {
+    pendingInput = null
+  }
+
   // ─── viewer di file ────────────────────────────────────────────
 
   /**
@@ -632,6 +680,7 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
       "/time" -> printAll(sysInfo.time())
       "/reload" -> reloadRc()
       "/config" -> openConfig()
+      "/history", "/hist" -> openHistory()
       "/uptime" -> printAll(sysInfo.uptime())
       "/lang" -> lang()
       "/search" -> search(arg)

@@ -41,15 +41,21 @@ No app drawer to scroll, no widgets, no clutter — just you and a blinking curs
 |:---:|:---:|:---:|
 | <img src="docs/screenshots/04-search.png" width="220" /> | <img src="docs/screenshots/05-config.png" width="220" /> | <img src="docs/screenshots/06-theme-amber.png" width="220" /> |
 
+| Command history (`/history`) |
+|:---:|
+| <img src="docs/screenshots/07-history.png" width="220" /> |
+
 ## Features
 
-- **Terminal home screen** — a `termina:~$` prompt with command history and a
-  scrollable output buffer, rendered as a real TUI (ASCII boxes, progress bars).
+- **Terminal home screen** — a `termina:~$` prompt with a scrollable output
+  buffer, rendered as a real TUI (ASCII boxes, progress bars).
+- **Command history** — `/history` opens a TUI list of past commands (no arrow
+  keys needed): **tap** to re-run one, **long-press** to edit it before running.
 - **Launch apps by name** — any free text starts the best-matching app.
 - **Launcher commands** (`/`-prefixed): `/launch`, `/apps`, `/contacts`,
   `/settings`, `/battery`, `/info`, `/ip`, `/ram`, `/storage`, `/date`, `/time`,
   `/uptime`, `/lang`, `/search` (web), `/call`, `/torch`, `/uninstall`, `/theme`,
-  `/clear`, `/reload`, `/config`, `/handbook`.
+  `/clear`, `/reload`, `/config`, `/history`, `/handbook`.
 - **Unix-like file system** — `ls`, `cd`, `pwd`, `cat`, `head`, `tail`, `mkdir`,
   `touch`, `rm`, `cp`, `mv`, `nano`, `du`, `tree`, `find`, plus `sudo` to unlock
   full storage access.
