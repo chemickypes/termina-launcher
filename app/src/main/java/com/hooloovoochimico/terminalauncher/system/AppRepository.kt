@@ -21,12 +21,43 @@ package com.hooloovoochimico.terminalauncher.system
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
+import android.os.Process
+import android.os.UserHandle
+import android.os.UserManager
 
-data class AppEntry(val label: String, val packageName: String, val activityName: String)
+/**
+ * Una voce della lista app. [userHandle] è il profilo utente a cui appartiene:
+ * `null` (o il profilo principale) = app personale, un profilo diverso = profilo
+ * di lavoro. Serve per lanciare le app del profilo di lavoro via [LauncherApps].
+ */
+data class AppEntry(
+  val label: String,
+  val packageName: String,
+  val activityName: String,
+  val isWork: Boolean = false,
+  val userHandle: UserHandle? = null,
+)
 
 class AppRepository(private val context: Context) {
 
   @Volatile private var cache: List<AppEntry> = emptyList()
+  @Volatile private var workCache: List<AppEntry> = emptyList()
+
+  private val launcherApps: LauncherApps
+    get() = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+
+  private val userManager: UserManager
+    get() = context.getSystemService(Context.USER_SERVICE) as UserManager
+
+  /** Profili utente diversi da quello principale (tipicamente il profilo di lavoro). */
+  private fun workProfiles(): List<UserHandle> {
+    val main = Process.myUserHandle()
+    return runCatching { userManager.userProfiles.filter { it != main } }.getOrDefault(emptyList())
+  }
+
+  /** True se esiste almeno un profilo di lavoro sul dispositivo. */
+  fun hasWorkProfile(): Boolean = workProfiles().isNotEmpty()
 
   fun apps(forceRefresh: Boolean = false): List<AppEntry> {
     if (cache.isEmpty() || forceRefresh) {
@@ -47,6 +78,30 @@ class AppRepository(private val context: Context) {
     return cache
   }
 
+  /** App installate nel/nei profilo/i di lavoro, enumerate via [LauncherApps]. */
+  fun workApps(forceRefresh: Boolean = false): List<AppEntry> {
+    if (workCache.isEmpty() || forceRefresh) {
+      workCache =
+        workProfiles()
+          .flatMap { user ->
+            runCatching {
+                launcherApps.getActivityList(null, user).map { info ->
+                  AppEntry(
+                    label = info.label.toString(),
+                    packageName = info.componentName.packageName,
+                    activityName = info.componentName.className,
+                    isWork = true,
+                    userHandle = user,
+                  )
+                }
+              }
+              .getOrDefault(emptyList())
+          }
+          .sortedBy { it.label.lowercase() }
+    }
+    return workCache
+  }
+
   /** Cerca per nome: prima match esatto, poi prefisso, poi sottostringa. */
   fun search(query: String): List<AppEntry> {
     val q = query.trim().lowercase()
@@ -61,12 +116,19 @@ class AppRepository(private val context: Context) {
 
   fun launch(app: AppEntry): Boolean =
     runCatching {
-        val intent =
-          Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setComponent(ComponentName(app.packageName, app.activityName))
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        context.startActivity(intent)
+        val component = ComponentName(app.packageName, app.activityName)
+        if (app.isWork && app.userHandle != null) {
+          // Le app del profilo di lavoro non si possono lanciare con un normale
+          // startActivity: vanno avviate nel loro profilo via LauncherApps.
+          launcherApps.startMainActivity(component, app.userHandle, null, null)
+        } else {
+          val intent =
+            Intent(Intent.ACTION_MAIN)
+              .addCategory(Intent.CATEGORY_LAUNCHER)
+              .setComponent(component)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+          context.startActivity(intent)
+        }
       }
       .isSuccess
 }

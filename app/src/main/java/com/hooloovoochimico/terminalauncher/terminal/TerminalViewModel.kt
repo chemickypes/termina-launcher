@@ -82,6 +82,13 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   var appsLoading by mutableStateOf(false)
     private set
 
+  // ─── profilo di lavoro: lista separata, popolata solo se esiste un work profile ───
+  val hasWorkProfile: Boolean by lazy { appRepository.hasWorkProfile() }
+  var workAppsList by mutableStateOf<List<AppEntry>>(emptyList())
+    private set
+  var workAppsLoading by mutableStateOf(false)
+    private set
+
   var contactsList by mutableStateOf<List<ContactEntry>>(emptyList())
     private set
   var contactsLoading by mutableStateOf(false)
@@ -427,6 +434,18 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
       val result = withContext(Dispatchers.IO) { appRepository.apps(forceRefresh = force) }
       appsList = result
       appsLoading = false
+    }
+  }
+
+  /** Carica le app del profilo di lavoro fuori dal main thread. */
+  fun loadWorkApps(force: Boolean = false) {
+    if (workAppsLoading) return
+    if (workAppsList.isNotEmpty() && !force) return
+    workAppsLoading = true
+    viewModelScope.launch {
+      val result = withContext(Dispatchers.IO) { appRepository.workApps(forceRefresh = force) }
+      workAppsList = result
+      workAppsLoading = false
     }
   }
 

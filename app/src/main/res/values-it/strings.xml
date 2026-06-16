@@ -233,6 +233,8 @@
     <!-- TUI screens -->
     <string name="apps_title">APP</string>
     <string name="apps_footer">%1$d/%2$d app</string>
+    <string name="apps_tab_personal">personali</string>
+    <string name="apps_tab_work">lavoro</string>
     <string name="filter_label">"filtro: "</string>
     <string name="contacts_title">CONTATTI</string>
     <string name="contacts_footer">%1$d contatti · tap = chiama</string>

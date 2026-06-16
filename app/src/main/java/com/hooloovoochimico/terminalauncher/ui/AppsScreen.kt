@@ -47,12 +47,19 @@ import com.hooloovoochimico.terminalauncher.theme.LocalTermPalette
 fun AppsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
   val palette = LocalTermPalette.current
   var filter by remember { mutableStateOf("") }
-  val allApps = vm.appsList
+  val hasWork = vm.hasWorkProfile
+  // tab 0 = personali, tab 1 = lavoro (mostrata solo se esiste un profilo di lavoro)
+  var tab by remember { mutableStateOf(0) }
+  val workTab = hasWork && tab == 1
+
+  val allApps = if (workTab) vm.workAppsList else vm.appsList
+  val loading = if (workTab) vm.workAppsLoading else vm.appsLoading
   val apps =
     if (filter.isBlank()) allApps
     else allApps.filter { it.label.contains(filter.trim(), ignoreCase = true) }
 
   LaunchedEffect(Unit) { vm.loadApps() }
+  LaunchedEffect(tab) { if (workTab) vm.loadWorkApps() }
   BackHandler(onBack = onBack)
 
   TuiFrame(
@@ -62,6 +69,19 @@ fun AppsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
   ) { modifier
     ->
     LazyColumn(modifier = modifier) {
+      if (hasWork) {
+        item {
+          TuiTabs(
+            tabs =
+              listOf(
+                stringResource(R.string.apps_tab_personal),
+                stringResource(R.string.apps_tab_work),
+              ),
+            selected = tab,
+            onSelect = { tab = it },
+          )
+        }
+      }
       item {
         Row(
           verticalAlignment = Alignment.CenterVertically,
@@ -87,7 +107,7 @@ fun AppsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
           )
         }
       }
-      if (vm.appsLoading && allApps.isEmpty()) {
+      if (loading && allApps.isEmpty()) {
         item { TuiLoading(stringResource(R.string.loading_apps)) }
       }
       itemsIndexed(apps, key = { _, app -> app.packageName + app.activityName }) { index, app ->
