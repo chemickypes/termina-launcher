@@ -65,6 +65,7 @@
     <string name="uh_mk">create/delete</string>
     <string name="uh_cpmv">copy/move</string>
     <string name="uh_nano">text editor (TUI)</string>
+    <string name="uh_less">view a text/markdown file</string>
     <string name="uh_sudo">full file access</string>
     <string name="uh_alias">list/define aliases</string>
     <string name="uh_find">search files (TUI)</string>
@@ -102,6 +103,10 @@
     <string name="manual_title">HANDBOOK</string>
     <string name="manual_footer">tap ESC to go back</string>
     <string name="manual_missing">handbook not available</string>
+    <string name="viewer_footer">%1$d lines · ESC to close</string>
+    <string name="viewer_edit">edit</string>
+    <string name="viewer_loading">reading file…</string>
+    <string name="viewer_read_error">(could not read file)</string>
     <string name="manual_tab_preview">preview</string>
     <string name="manual_tab_source">source</string>
 
@@ -130,6 +135,7 @@
     <string name="e_usage_cp">usage: cp [-r] &lt;source&gt; &lt;dest&gt;</string>
     <string name="e_usage_mv">usage: mv &lt;source&gt; &lt;dest&gt;</string>
     <string name="e_usage_nano">usage: nano &lt;file&gt;</string>
+    <string name="e_usage_less">usage: less &lt;file&gt;</string>
 
     <!-- launch / apps -->
     <string name="app_not_found">no app found for \'%1$s\'</string>
@@ -199,6 +205,8 @@
     <string name="fs_mv_done">moved: %1$s -&gt; %2$s</string>
     <string name="fs_mv_error">mv: error: %1$s</string>
     <string name="nano_is_dir">nano: %1$s: is a directory</string>
+    <string name="viewer_is_dir">less: %1$s: is a directory</string>
+    <string name="viewer_no_file">less: %1$s: no such file</string>
     <string name="nano_saved">nano: saved %1$s</string>
 
     <!-- system info -->

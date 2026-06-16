@@ -38,6 +38,7 @@ enum class TermScreen {
   EDITOR,
   SEARCH,
   MANUAL,
+  VIEWER,
 }
 
 data class CommandSpec(
@@ -77,7 +78,7 @@ val COMMANDS =
 val UNIX_COMMANDS =
   setOf(
     "ls", "ll", "la", "cd", "pwd", "cat", "head", "tail", "mkdir", "touch", "rm", "cp", "mv",
-    "nano", "sudo", "find", "source", "du", "tree",
+    "nano", "less", "view", "sudo", "find", "source", "du", "tree",
   )
 
 /** Sintassi (non tradotta) + descrizione (tradotta) per la sezione file system dell'help. */
@@ -89,6 +90,7 @@ val UNIX_HELP: List<Pair<String, Int>> =
     "mkdir touch rm" to R.string.uh_mk,
     "cp mv" to R.string.uh_cpmv,
     "nano <file>" to R.string.uh_nano,
+    "less | view <f>" to R.string.uh_less,
     "find <nome>" to R.string.uh_find,
     "du [-n] [path]" to R.string.uh_du,
     "tree [-L n]" to R.string.uh_tree,

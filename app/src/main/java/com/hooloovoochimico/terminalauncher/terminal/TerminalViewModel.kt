@@ -100,6 +100,17 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   var manualLines by mutableStateOf<List<String>>(emptyList())
     private set
 
+  // ─── viewer di file (sola lettura): markdown reso, resto come testo semplice ───
+  var viewerFile by mutableStateOf<File?>(null)
+    private set
+  var viewerLines by mutableStateOf<List<String>>(emptyList())
+    private set
+  var viewerIsMarkdown by mutableStateOf(false)
+    private set
+  var viewerLoading by mutableStateOf(false)
+    private set
+  private var viewerReturn = TermScreen.TERMINAL
+
   // ─── stato schermata di ricerca file ───
   var searchQuery by mutableStateOf("")
   var searchResults by mutableStateOf<List<SearchHit>>(emptyList())
@@ -317,7 +328,14 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
    *  - cartella, o apertura fallita → naviga nella cartella e torna al terminale.
    */
   fun openSearchHit(hit: SearchHit) {
-    if (!hit.isDir && openFileExternally(hit.file)) return
+    if (!hit.isDir) {
+      val ext = hit.file.extension.lowercase()
+      if (ext in MARKDOWN_EXT || ext in TEXT_EXT) {
+        openViewer(hit.file, returnTo = TermScreen.SEARCH)
+        return
+      }
+      if (openFileExternally(hit.file)) return
+    }
     navigateToHit(hit)
   }
 
@@ -418,6 +436,65 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
 
   fun closeManual() {
     screen = TermScreen.TERMINAL
+  }
+
+  // ─── viewer di file ────────────────────────────────────────────
+
+  /**
+   * Apre un file nel viewer interno (sola lettura). I markdown sono resi con
+   * anteprima/sorgente, gli altri come testo semplice. Lettura off-main con un
+   * tetto di righe per non bloccare la UI su file enormi. [returnTo] è la
+   * schermata a cui tornare alla chiusura (es. la ricerca, se aperto da lì).
+   */
+  fun openViewer(file: File, returnTo: TermScreen = TermScreen.TERMINAL) {
+    viewerReturn = returnTo
+    viewerFile = file
+    viewerIsMarkdown = file.extension.lowercase() in MARKDOWN_EXT
+    viewerLines = emptyList()
+    viewerLoading = true
+    screen = TermScreen.VIEWER
+    viewModelScope.launch {
+      val lines =
+        withContext(Dispatchers.IO) {
+          runCatching { file.bufferedReader().useLines { seq -> seq.take(MAX_VIEW_LINES).toList() } }
+            .getOrElse { listOf(str(R.string.viewer_read_error)) }
+        }
+      viewerLines = lines
+      viewerLoading = false
+    }
+  }
+
+  fun closeViewer() {
+    val ret = viewerReturn
+    viewerFile = null
+    viewerLines = emptyList()
+    screen = ret
+  }
+
+  /** Dal viewer: apre il file corrente nel nostro nano per modificarlo. */
+  fun editViewerFile() {
+    val f = viewerFile ?: return
+    viewerFile = null
+    viewerLines = emptyList()
+    editorFile = f
+    screen = TermScreen.EDITOR
+  }
+
+  private fun less(arg: String) {
+    if (arg.isEmpty()) {
+      err(R.string.e_usage_less)
+      return
+    }
+    val f = fs.resolve(arg)
+    if (!f.exists()) {
+      err(R.string.viewer_no_file, arg)
+      return
+    }
+    if (f.isDirectory) {
+      err(R.string.viewer_is_dir, arg)
+      return
+    }
+    openViewer(f)
   }
 
   // ─── caricamento app / contatti off-main (la query è lenta su device reali) ───
@@ -654,6 +731,7 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
         out(fs.mv(p0, p1))
       }
       "nano" -> nano(p0)
+      "less", "view" -> less(p0)
       "sudo" -> sudo()
       "source" -> reloadRc()
       "find" -> find(params.joinToString(" "), reindex = "--reindex" in flags || "-r" in flags)
@@ -899,5 +977,19 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   companion object {
     /** Intervallo minimo tra due reindex automatici all'avvio (10 minuti). */
     private const val PREWARM_COOLDOWN_MS = 10 * 60 * 1000L
+
+    /** Tetto di righe lette dal viewer, per non bloccare la UI su file enormi. */
+    private const val MAX_VIEW_LINES = 5000
+
+    /** Estensioni rese come markdown (anteprima + sorgente). */
+    private val MARKDOWN_EXT = setOf("md", "markdown")
+
+    /** Altre estensioni testuali aperte nel viewer come testo semplice. */
+    private val TEXT_EXT =
+      setOf(
+        "txt", "log", "json", "xml", "html", "csv", "yml", "yaml", "toml", "ini", "conf", "cfg",
+        "properties", "sh", "kt", "kts", "java", "py", "c", "h", "cpp", "rs", "go", "gradle",
+        "rc", "env",
+      )
   }
 }

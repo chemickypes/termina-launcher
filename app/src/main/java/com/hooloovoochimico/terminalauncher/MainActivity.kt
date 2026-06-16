@@ -40,6 +40,7 @@ import com.hooloovoochimico.terminalauncher.theme.TerminaLauncherTheme
 import com.hooloovoochimico.terminalauncher.ui.AppsScreen
 import com.hooloovoochimico.terminalauncher.ui.ContactsScreen
 import com.hooloovoochimico.terminalauncher.ui.EditorScreen
+import com.hooloovoochimico.terminalauncher.ui.FileViewerScreen
 import com.hooloovoochimico.terminalauncher.ui.ManualScreen
 import com.hooloovoochimico.terminalauncher.ui.RecoveryOverlay
 import com.hooloovoochimico.terminalauncher.ui.SearchScreen
@@ -87,6 +88,7 @@ fun TerminaApp(vm: TerminalViewModel = viewModel()) {
           TermScreen.EDITOR -> EditorScreen(vm)
           TermScreen.SEARCH -> SearchScreen(vm) { vm.closeSearch() }
           TermScreen.MANUAL -> ManualScreen(vm) { vm.closeManual() }
+          TermScreen.VIEWER -> FileViewerScreen(vm) { vm.closeViewer() }
         }
         // countdown puramente visivo (nessun pointerInput → non intercetta i tap)
         RecoveryOverlay(recovery)

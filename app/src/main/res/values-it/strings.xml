@@ -65,6 +65,7 @@
     <string name="uh_mk">crea/cancella</string>
     <string name="uh_cpmv">copia/sposta</string>
     <string name="uh_nano">editor di testo (TUI)</string>
+    <string name="uh_less">apri un file testo/markdown</string>
     <string name="uh_sudo">accesso completo</string>
     <string name="uh_alias">elenca/definisci alias</string>
     <string name="uh_find">cerca file (TUI)</string>
@@ -102,6 +103,10 @@
     <string name="manual_title">MANUALE</string>
     <string name="manual_footer">tocca ESC per tornare</string>
     <string name="manual_missing">manuale non disponibile</string>
+    <string name="viewer_footer">%1$d righe · ESC per chiudere</string>
+    <string name="viewer_edit">modifica</string>
+    <string name="viewer_loading">leggo il file…</string>
+    <string name="viewer_read_error">(impossibile leggere il file)</string>
     <string name="manual_tab_preview">anteprima</string>
     <string name="manual_tab_source">sorgente</string>
 
@@ -130,6 +135,7 @@
     <string name="e_usage_cp">uso: cp [-r] &lt;sorgente&gt; &lt;destinazione&gt;</string>
     <string name="e_usage_mv">uso: mv &lt;sorgente&gt; &lt;destinazione&gt;</string>
     <string name="e_usage_nano">uso: nano &lt;file&gt;</string>
+    <string name="e_usage_less">uso: less &lt;file&gt;</string>
 
     <!-- launch / apps -->
     <string name="app_not_found">nessuna app trovata per \'%1$s\'</string>
@@ -199,6 +205,8 @@
     <string name="fs_mv_done">spostato: %1$s -&gt; %2$s</string>
     <string name="fs_mv_error">mv: errore: %1$s</string>
     <string name="nano_is_dir">nano: %1$s: è una directory</string>
+    <string name="viewer_is_dir">less: %1$s: è una directory</string>
+    <string name="viewer_no_file">less: %1$s: file inesistente</string>
     <string name="nano_saved">nano: salvato %1$s</string>
 
     <!-- system info -->
