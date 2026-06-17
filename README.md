@@ -26,7 +26,7 @@ prompt**. Everything is a command:
 
 - **Launch apps by name** — just type `chrome`, `gmail`, `maps`…
 - **Browse your phone like a filesystem** — `ls`, `cd`, `cat`, `find`, `du`, `tree`…
-- **Run launcher actions** — `/battery`, `/ip`, `/torch`, `/call`, `/uninstall`…
+- **Run launcher actions** — `/battery`, `/ip`, `/usage`, `/torch`, `/call`, `/uninstall`…
 - **Customize it** — themes, font scale, and bash-style aliases in a `.terminarc` file.
 
 No app drawer to scroll, no widgets, no clutter — just you and a blinking cursor.
@@ -41,9 +41,9 @@ No app drawer to scroll, no widgets, no clutter — just you and a blinking curs
 |:---:|:---:|:---:|
 | <img src="docs/screenshots/04-search.png" width="220" /> | <img src="docs/screenshots/05-config.png" width="220" /> | <img src="docs/screenshots/06-theme-amber.png" width="220" /> |
 
-| Command history (`/history`) |
-|:---:|
-| <img src="docs/screenshots/07-history.png" width="220" /> |
+| Command history (`/history`) | IP & screen time (`/ip`, `/usage`) | In-app keyboard (experimental) |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/07-history.png" width="220" /> | <img src="docs/screenshots/08-usage.png" width="220" /> | <img src="docs/screenshots/09-keyboard.png" width="220" /> |
 
 ## Features
 
@@ -53,9 +53,11 @@ No app drawer to scroll, no widgets, no clutter — just you and a blinking curs
   keys needed): **tap** to re-run one, **long-press** to edit it before running.
 - **Launch apps by name** — any free text starts the best-matching app.
 - **Launcher commands** (`/`-prefixed): `/launch`, `/apps`, `/contacts`,
-  `/settings`, `/battery`, `/info`, `/ip`, `/ram`, `/storage`, `/date`, `/time`,
-  `/uptime`, `/lang`, `/search` (web), `/call`, `/torch`, `/uninstall`, `/theme`,
-  `/clear`, `/reload`, `/config`, `/history`, `/handbook`.
+  `/settings`, `/battery`, `/info`, `/ip`, `/usage`, `/ram`, `/storage`, `/date`,
+  `/time`, `/uptime`, `/lang`, `/search` (web), `/call`, `/torch`, `/uninstall`,
+  `/theme`, `/clear`, `/reload`, `/config`, `/history`, `/handbook`.
+- **Screen-time at a glance** — `/usage` lists the apps you've used the most
+  *today* (since midnight), with a total, via Android's usage-stats API.
 - **Unix-like file system** — `ls`, `cd`, `pwd`, `cat`, `head`, `tail`, `mkdir`,
   `touch`, `rm`, `cp`, `mv`, `nano`, `du`, `tree`, `find`, plus `sudo` to unlock
   full storage access.
@@ -66,6 +68,9 @@ No app drawer to scroll, no widgets, no clutter — just you and a blinking curs
 - **Built-in manual** — `/handbook` opens an in-app markdown reader with rendered
   *preview* and raw *source* tabs.
 - **Themes & font scale** — green / amber / cyan / white palettes, persisted.
+- **Optional in-app keyboard** *(experimental)* — a terminal-styled Compose
+  keyboard you can switch on in Settings; otherwise the system keyboard is used.
+  The system keyboard also auto-closes when you launch an app.
 - **Internationalization** — English (base) and Italian, selected automatically.
 - **Smooth, never blocking** — apps, contacts and file searches load off the main
   thread with a braille spinner, so the UI never freezes.
@@ -133,6 +138,8 @@ alias wifi=/launch wifi
 | `READ_CONTACTS` | list & call contacts (`/contacts`, `/call`) | requested on first use |
 | `MANAGE_EXTERNAL_STORAGE` | browse the whole filesystem | only when you type `sudo` |
 | `REQUEST_DELETE_PACKAGES` | uninstall apps from the terminal | only when you run `/uninstall` |
+| `PACKAGE_USAGE_STATS` | per-app screen time (`/usage`) | granted in Settings; `/usage` opens the right page |
+| `ACCESS_NETWORK_STATE` | read the active network's IP (`/ip`) | granted at install |
 
 All permissions are optional — the launcher is fully usable without granting any.
 

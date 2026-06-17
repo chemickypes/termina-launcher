@@ -18,6 +18,7 @@
     <string name="u_battery">/battery</string>
     <string name="u_info">/info</string>
     <string name="u_ip">/ip</string>
+    <string name="u_usage">/usage</string>
     <string name="u_ram">/ram</string>
     <string name="u_storage">/storage</string>
     <string name="u_date">/date</string>
@@ -44,6 +45,7 @@
     <string name="d_battery">batteria</string>
     <string name="d_info">info dispositivo</string>
     <string name="d_ip">indirizzi IP</string>
+    <string name="d_usage">tempo schermo oggi</string>
     <string name="d_ram">memoria</string>
     <string name="d_storage">spazio disco</string>
     <string name="d_date">data e ora</string>
@@ -236,6 +238,17 @@
     <string name="info_cpu">"cpu:         %1$s"</string>
     <string name="info_screen">"schermo:     %1$s"</string>
     <string name="ip_none">nessuna interfaccia di rete attiva</string>
+    <string name="ip_wifi">wi-fi</string>
+    <string name="ip_cellular">dati</string>
+    <string name="ip_ethernet">ethernet</string>
+    <string name="ip_vpn">vpn</string>
+    <string name="ip_other">rete</string>
+    <string name="usage_total">"tempo schermo oggi: %1$s"</string>
+    <string name="usage_none">nessun dato di utilizzo per oggi</string>
+    <string name="usage_unavailable">statistiche d\'uso non disponibili</string>
+    <string name="usage_no_perm">accesso all\'utilizzo non concesso — apro le impostazioni…</string>
+    <string name="usage_grant_hint">abilita Termina, poi rilancia /usage</string>
+    <string name="label_usage_settings">accesso ai dati di utilizzo</string>
     <string name="pct_used">"[%1$s] %2$d%% in uso"</string>
     <string name="mem_total">"totale:      %1$s"</string>
     <string name="mem_available">"disponibile: %1$s"</string>
@@ -285,6 +298,12 @@
     <string name="set_home_detail">imposta termina come home</string>
     <string name="set_config">modifica .terminarc</string>
     <string name="set_config_detail">alias e configurazione</string>
+    <string name="set_keyboard">tastiera interna: %1$s</string>
+    <string name="set_keyboard_detail">sperimentale — sostituisce la tastiera di sistema</string>
+    <string name="kb_on">on</string>
+    <string name="kb_off">off</string>
+    <string name="kb_symbols">\?123</string>
+    <string name="kb_letters">abc</string>
 
     <!-- loading indicators -->
     <string name="loading_apps">carico le app…</string>

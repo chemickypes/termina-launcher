@@ -18,6 +18,7 @@
     <string name="u_battery">/battery</string>
     <string name="u_info">/info</string>
     <string name="u_ip">/ip</string>
+    <string name="u_usage">/usage</string>
     <string name="u_ram">/ram</string>
     <string name="u_storage">/storage</string>
     <string name="u_date">/date</string>
@@ -44,6 +45,7 @@
     <string name="d_battery">battery</string>
     <string name="d_info">device info</string>
     <string name="d_ip">IP addresses</string>
+    <string name="d_usage">screen time today</string>
     <string name="d_ram">memory</string>
     <string name="d_storage">disk space</string>
     <string name="d_date">date and time</string>
@@ -236,6 +238,17 @@
     <string name="info_cpu">"cpu:         %1$s"</string>
     <string name="info_screen">"screen:      %1$s"</string>
     <string name="ip_none">no active network interface</string>
+    <string name="ip_wifi">wi-fi</string>
+    <string name="ip_cellular">cellular</string>
+    <string name="ip_ethernet">ethernet</string>
+    <string name="ip_vpn">vpn</string>
+    <string name="ip_other">network</string>
+    <string name="usage_total">"screen time today: %1$s"</string>
+    <string name="usage_none">no usage data for today</string>
+    <string name="usage_unavailable">usage stats unavailable</string>
+    <string name="usage_no_perm">usage access not granted — opening settings…</string>
+    <string name="usage_grant_hint">enable Termina, then run /usage again</string>
+    <string name="label_usage_settings">usage access settings</string>
     <string name="pct_used">"[%1$s] %2$d%% used"</string>
     <string name="mem_total">"total:       %1$s"</string>
     <string name="mem_available">"available:   %1$s"</string>
@@ -285,6 +298,12 @@
     <string name="set_home_detail">set termina as home</string>
     <string name="set_config">edit .terminarc</string>
     <string name="set_config_detail">aliases &amp; config</string>
+    <string name="set_keyboard">in-app keyboard: %1$s</string>
+    <string name="set_keyboard_detail">experimental — replaces system keyboard</string>
+    <string name="kb_on">on</string>
+    <string name="kb_off">off</string>
+    <string name="kb_symbols">\?123</string>
+    <string name="kb_letters">abc</string>
 
     <!-- loading indicators -->
     <string name="loading_apps">loading apps…</string>

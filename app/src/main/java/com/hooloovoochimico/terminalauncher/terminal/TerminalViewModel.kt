@@ -130,6 +130,17 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   var fontScale by mutableStateOf(prefs.getFloat("font_scale", 1f))
     private set
 
+  /** Tastiera interna sperimentale (Compose) al posto dell'IME di sistema. */
+  var customKeyboard by mutableStateOf(prefs.getBoolean("custom_keyboard", false))
+    private set
+
+  /**
+   * Contatore "chiudi la tastiera": incrementato all'avvio di un'app. Il terminale lo
+   * osserva e nasconde l'IME di sistema (bug: restava aperta dopo aver lanciato un'app).
+   */
+  var hideKeyboardSignal by mutableStateOf(0)
+    private set
+
   val history = mutableStateListOf<String>()
 
   /** Comando precaricato nel campo input del terminale (es. "modifica" dalla history). */
@@ -633,6 +644,16 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
     prefs.edit().putFloat("font_scale", scale).apply()
   }
 
+  fun toggleCustomKeyboard() {
+    customKeyboard = !customKeyboard
+    prefs.edit().putBoolean("custom_keyboard", customKeyboard).apply()
+  }
+
+  /** Segnala alla UI del terminale di chiudere la tastiera (es. dopo aver avviato un'app). */
+  fun requestHideKeyboard() {
+    hideKeyboardSignal++
+  }
+
   fun submit(raw: String) {
     val input = raw.trim()
     if (input.isEmpty()) return
@@ -674,6 +695,7 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
       "/battery" -> printAll(sysInfo.battery())
       "/info" -> printAll(sysInfo.deviceInfo())
       "/ip" -> printAll(sysInfo.ipAddresses())
+      "/usage" -> usage()
       "/ram" -> printAll(sysInfo.ram())
       "/storage" -> printAll(sysInfo.storage())
       "/date" -> printAll(sysInfo.dateTime())
@@ -882,8 +904,10 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
       matches.isEmpty() -> err(R.string.app_not_found, query)
       matches.size == 1 -> {
         val app = matches.first()
-        if (appRepository.launch(app)) out(str(R.string.launching_app, app.label))
-        else err(R.string.launch_failed, app.label)
+        if (appRepository.launch(app)) {
+          requestHideKeyboard()
+          out(str(R.string.launching_app, app.label))
+        } else err(R.string.launch_failed, app.label)
       }
       else -> {
         out(str(R.string.multiple_results, query), LineKind.ACCENT)
@@ -909,6 +933,23 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   private fun lang() {
     printAll(sysInfo.language())
     openSystem(Settings.ACTION_LOCALE_SETTINGS, str(R.string.label_locale_settings))
+  }
+
+  /** Tempo di schermo per app oggi. Senza permesso speciale apre le impostazioni dedicate. */
+  private fun usage() {
+    if (!sysInfo.hasUsageAccess()) {
+      err(R.string.usage_no_perm)
+      out(str(R.string.usage_grant_hint))
+      openSystem(Settings.ACTION_USAGE_ACCESS_SETTINGS, str(R.string.label_usage_settings))
+      return
+    }
+    viewModelScope.launch {
+      val rows =
+        withContext(Dispatchers.IO) {
+          sysInfo.appUsageToday(labelOf = { appRepository.labelFor(it) })
+        }
+      printAll(rows)
+    }
   }
 
   private fun search(arg: String) {
@@ -1017,7 +1058,9 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
 
   fun launchFromTui(label: String) {
     val matches = appRepository.search(label)
-    matches.firstOrNull()?.let { appRepository.launch(it) }
+    matches.firstOrNull()?.let {
+      if (appRepository.launch(it)) requestHideKeyboard()
+    }
   }
 
   private fun startSafely(intent: Intent): Boolean =

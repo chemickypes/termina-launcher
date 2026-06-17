@@ -114,6 +114,16 @@ class AppRepository(private val context: Context) {
     return all.filter { it.label.lowercase().contains(q) || it.packageName.lowercase().contains(q) }
   }
 
+  /** Nome leggibile per un package (usato da /usage). Cache app → PackageManager → null. */
+  fun labelFor(packageName: String): String? {
+    apps().firstOrNull { it.packageName == packageName }?.let { return it.label }
+    return runCatching {
+        val pm = context.packageManager
+        pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
+      }
+      .getOrNull()
+  }
+
   fun launch(app: AppEntry): Boolean =
     runCatching {
         val component = ComponentName(app.packageName, app.activityName)

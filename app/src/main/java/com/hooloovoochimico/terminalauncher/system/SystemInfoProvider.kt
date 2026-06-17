@@ -19,12 +19,18 @@
 package com.hooloovoochimico.terminalauncher.system
 
 import android.app.ActivityManager
+import android.app.AppOpsManager
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Environment
+import android.os.Process
 import android.os.StatFs
 import android.os.SystemClock
 import androidx.annotation.StringRes
@@ -32,6 +38,7 @@ import com.hooloovoochimico.terminalauncher.R
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -92,14 +99,125 @@ class SystemInfoProvider(private val context: Context) {
 
   fun ipAddresses(): List<String> {
     val lines = mutableListOf<String>()
+    // Sorgente primaria: ConnectivityManager → indirizzo della/e rete/i attiva/e con
+    // etichetta leggibile (Wi-Fi / dati / Ethernet / VPN). NetworkInterface da solo
+    // su molti device restituisce una lista vuota, da cui il vecchio "nessuna interfaccia".
     runCatching {
-      NetworkInterface.getNetworkInterfaces()?.toList()?.forEach { ni ->
-        ni.inetAddresses.toList()
+      val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+      cm?.allNetworks?.forEach { net ->
+        val caps = cm.getNetworkCapabilities(net) ?: return@forEach
+        if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) return@forEach
+        val lp = cm.getLinkProperties(net) ?: return@forEach
+        val label = transportLabel(caps)
+        lp.linkAddresses
+          .map { it.address }
           .filter { !it.isLoopbackAddress && it is Inet4Address }
-          .forEach { lines += "${ni.name.padEnd(8)} ${it.hostAddress}" }
+          .forEach { lines += "${label.padEnd(10)} ${it.hostAddress}" }
+      }
+    }
+    // Fallback (es. permesso assente o nessuna rete riconosciuta): elenco grezzo.
+    if (lines.isEmpty()) {
+      runCatching {
+        NetworkInterface.getNetworkInterfaces()?.toList()?.forEach { ni ->
+          ni.inetAddresses.toList()
+            .filter { !it.isLoopbackAddress && it is Inet4Address }
+            .forEach { lines += "${ni.name.padEnd(10)} ${it.hostAddress}" }
+        }
       }
     }
     return lines.ifEmpty { listOf(str(R.string.ip_none)) }
+  }
+
+  private fun transportLabel(caps: NetworkCapabilities): String =
+    when {
+      caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> str(R.string.ip_wifi)
+      caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> str(R.string.ip_cellular)
+      caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> str(R.string.ip_ethernet)
+      caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> str(R.string.ip_vpn)
+      else -> str(R.string.ip_other)
+    }
+
+  /** True se l'utente ha concesso l'accesso alle statistiche d'uso (permesso speciale). */
+  fun hasUsageAccess(): Boolean {
+    val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as? AppOpsManager ?: return false
+    val mode =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        appOps.unsafeCheckOpNoThrow(
+          AppOpsManager.OPSTR_GET_USAGE_STATS,
+          Process.myUid(),
+          context.packageName,
+        )
+      } else {
+        @Suppress("DEPRECATION")
+        appOps.checkOpNoThrow(
+          AppOpsManager.OPSTR_GET_USAGE_STATS,
+          Process.myUid(),
+          context.packageName,
+        )
+      }
+    return mode == AppOpsManager.MODE_ALLOWED
+  }
+
+  /**
+   * Tempo di schermo per app dalla mezzanotte di oggi (top [limit]), risolvendo le
+   * etichette tramite [labelOf]. Richiede [hasUsageAccess]; off main thread (chiamato da IO).
+   */
+  fun appUsageToday(limit: Int = 8, labelOf: (String) -> String?): List<String> {
+    val usm =
+      context.getSystemService(Context.USAGE_STATS_SERVICE) as? UsageStatsManager
+        ?: return listOf(str(R.string.usage_unavailable))
+    val start =
+      Calendar.getInstance()
+        .apply {
+          set(Calendar.HOUR_OF_DAY, 0)
+          set(Calendar.MINUTE, 0)
+          set(Calendar.SECOND, 0)
+          set(Calendar.MILLISECOND, 0)
+        }
+        .timeInMillis
+    val now = System.currentTimeMillis()
+    // Niente queryUsageStats(INTERVAL_DAILY): i suoi bucket giornalieri includono tempo
+    // di ieri (di fatto ~24h mobili). Ricostruiamo il foreground time SOLO da mezzanotte
+    // sommando gli eventi foreground/background dentro [start, now].
+    val totals = HashMap<String, Long>()
+    val fgStart = HashMap<String, Long>() // package → istante in cui è passato in foreground
+    val events = usm.queryEvents(start, now)
+    val ev = UsageEvents.Event()
+    while (events.hasNextEvent()) {
+      events.getNextEvent(ev)
+      val pkg = ev.packageName ?: continue
+      when (ev.eventType) {
+        UsageEvents.Event.MOVE_TO_FOREGROUND -> fgStart[pkg] = ev.timeStamp
+        UsageEvents.Event.MOVE_TO_BACKGROUND -> {
+          // se non abbiamo visto il foreground (app già aperta prima di mezzanotte),
+          // conta dal momento "start" (mezzanotte) fino a questo background.
+          val from = fgStart.remove(pkg) ?: start
+          val dur = ev.timeStamp - from
+          if (dur > 0) totals[pkg] = (totals[pkg] ?: 0L) + dur
+        }
+      }
+    }
+    // app ancora in foreground adesso: conta fino a ora.
+    fgStart.forEach { (pkg, from) ->
+      val dur = now - from
+      if (dur > 0) totals[pkg] = (totals[pkg] ?: 0L) + dur
+    }
+    if (totals.isEmpty()) return listOf(str(R.string.usage_none))
+    val top = totals.entries.sortedByDescending { it.value }.take(limit)
+    val grand = totals.values.sum()
+    val rows = mutableListOf(str(R.string.usage_total, formatDuration(grand)))
+    top.forEach { (pkg, ms) ->
+      val name = labelOf(pkg) ?: pkg
+      rows += "${formatDuration(ms).padEnd(8)} $name"
+    }
+    return rows
+  }
+
+  private fun formatDuration(ms: Long): String {
+    val totalMin = ms / 60_000
+    val h = totalMin / 60
+    val m = totalMin % 60
+    return if (h > 0) "${h}h ${m}m" else "${m}m"
   }
 
   fun ram(): List<String> {

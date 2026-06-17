@@ -98,6 +98,17 @@ fun SettingsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
         }
       }
       item {
+        val kbState =
+          if (vm.customKeyboard) stringResource(R.string.kb_on) else stringResource(R.string.kb_off)
+        TuiRow(
+          index = null,
+          text = stringResource(R.string.set_keyboard, kbState),
+          detail = stringResource(R.string.set_keyboard_detail),
+        ) {
+          vm.toggleCustomKeyboard()
+        }
+      }
+      item {
         Text(
           text = "│ ─── ${stringResource(R.string.sec_system)} ───",
           color = palette.dim,

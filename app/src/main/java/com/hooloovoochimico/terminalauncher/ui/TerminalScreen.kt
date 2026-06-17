@@ -18,7 +18,7 @@
 
 package com.hooloovoochimico.terminalauncher.ui
 
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
@@ -46,9 +46,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.hooloovoochimico.terminalauncher.terminal.COMMANDS
 import com.hooloovoochimico.terminalauncher.terminal.LineKind
@@ -58,9 +62,19 @@ import com.hooloovoochimico.terminalauncher.theme.LocalTermPalette
 @Composable
 fun TerminalScreen(vm: TerminalViewModel) {
   val palette = LocalTermPalette.current
-  var input by remember { mutableStateOf("") }
+  var input by remember { mutableStateOf(TextFieldValue("")) }
   val listState = rememberLazyListState()
   val focusRequester = remember { FocusRequester() }
+  val keyboardController = LocalSoftwareKeyboardController.current
+  val focusManager = LocalFocusManager.current
+
+  // schermata principale (home del launcher): il tasto Indietro non deve fare nulla
+  BackHandler(enabled = true) {}
+
+  fun runCommand() {
+    vm.submit(input.text)
+    input = TextFieldValue("")
+  }
 
   LaunchedEffect(vm.lines.size) {
     if (vm.lines.isNotEmpty()) listState.animateScrollToItem(vm.lines.size - 1)
@@ -69,9 +83,23 @@ fun TerminalScreen(vm: TerminalViewModel) {
   // comando precaricato dalla history ("modifica"): riempie il campo e lo azzera nel VM
   LaunchedEffect(vm.pendingInput) {
     vm.pendingInput?.let {
-      input = it
+      input = TextFieldValue(it, TextRange(it.length))
       vm.clearPendingInput()
     }
+  }
+
+  // bug tastiera: dopo aver avviato un'app il VM incrementa il segnale → chiudi subito l'IME.
+  LaunchedEffect(vm.hideKeyboardSignal) {
+    if (vm.hideKeyboardSignal > 0) {
+      keyboardController?.hide()
+      focusManager.clearFocus(force = true)
+    }
+  }
+
+
+  // con la tastiera interna attiva non deve comparire quella di sistema
+  LaunchedEffect(vm.customKeyboard) {
+    if (vm.customKeyboard) keyboardController?.hide()
   }
 
   Column(modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp)) {
@@ -89,9 +117,9 @@ fun TerminalScreen(vm: TerminalViewModel) {
     }
 
     // suggerimenti comando mentre si digita "/"
-    if (input.startsWith("/")) {
-      val matches = COMMANDS.filter { it.name.startsWith(input.trim().lowercase()) }
-      if (matches.isNotEmpty() && matches.none { it.name == input.trim() }) {
+    if (input.text.startsWith("/")) {
+      val matches = COMMANDS.filter { it.name.startsWith(input.text.trim().lowercase()) }
+      if (matches.isNotEmpty() && matches.none { it.name == input.text.trim() }) {
         Row(
           modifier =
             Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(vertical = 2.dp)
@@ -101,7 +129,11 @@ fun TerminalScreen(vm: TerminalViewModel) {
               text = "[${spec.name}] ",
               color = palette.dim,
               style = MaterialTheme.typography.bodyMedium,
-              modifier = Modifier.clickable { input = spec.name + " " },
+              modifier =
+                Modifier.clickable {
+                  val t = spec.name + " "
+                  input = TextFieldValue(t, TextRange(t.length))
+                },
             )
           }
         }
@@ -121,6 +153,7 @@ fun TerminalScreen(vm: TerminalViewModel) {
       BasicTextField(
         value = input,
         onValueChange = { input = it },
+        readOnly = vm.customKeyboard,
         textStyle =
           TextStyle(
             color = palette.fg,
@@ -135,14 +168,17 @@ fun TerminalScreen(vm: TerminalViewModel) {
             autoCorrectEnabled = false,
             imeAction = ImeAction.Go,
           ),
-        keyboardActions =
-          KeyboardActions(
-            onGo = {
-              vm.submit(input)
-              input = ""
-            }
-          ),
+        keyboardActions = KeyboardActions(onGo = { runCommand() }),
         modifier = Modifier.weight(1f).focusRequester(focusRequester),
+      )
+    }
+
+    // tastiera interna sperimentale (sostituisce l'IME di sistema quando attiva)
+    if (vm.customKeyboard) {
+      TerminalKeyboard(
+        value = input,
+        onValueChange = { input = it },
+        onSubmit = { runCommand() },
       )
     }
   }

@@ -18,7 +18,9 @@
 
 package com.hooloovoochimico.terminalauncher
 
+import android.content.Context
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -52,10 +54,32 @@ import com.hooloovoochimico.terminalauncher.ui.SettingsScreen
 import com.hooloovoochimico.terminalauncher.ui.TerminalScreen
 
 class MainActivity : ComponentActivity() {
+  // Il primo guadagno di focus della finestra è l'avvio a freddo: lì lasciamo che la
+  // tastiera compaia (focus automatico sul campo). I successivi sono rientri da un'app:
+  // chiudiamo l'IME, così non resta aperto dopo aver lanciato un'applicazione.
+  private var skipFirstWindowFocus = true
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent { TerminaApp() }
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    if (!hasFocus) return
+    if (skipFirstWindowFocus) {
+      skipFirstWindowFocus = false
+      return
+    }
+    // Chiusura affidabile via InputMethodManager + token finestra: funziona anche senza
+    // un campo con focus (WindowInsetsController invece no-op in quel caso). Posticipato
+    // così avviene dopo che la finestra ha ripreso il focus.
+    val view = window.decorView
+    view.post {
+      val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+      imm?.hideSoftInputFromWindow(view.windowToken, 0)
+    }
   }
 }
 

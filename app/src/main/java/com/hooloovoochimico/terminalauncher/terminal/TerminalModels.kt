@@ -59,6 +59,7 @@ val COMMANDS =
     CommandSpec("/battery", R.string.u_battery, R.string.d_battery),
     CommandSpec("/info", R.string.u_info, R.string.d_info),
     CommandSpec("/ip", R.string.u_ip, R.string.d_ip),
+    CommandSpec("/usage", R.string.u_usage, R.string.d_usage),
     CommandSpec("/ram", R.string.u_ram, R.string.d_ram),
     CommandSpec("/storage", R.string.u_storage, R.string.d_storage),
     CommandSpec("/date", R.string.u_date, R.string.d_date),
