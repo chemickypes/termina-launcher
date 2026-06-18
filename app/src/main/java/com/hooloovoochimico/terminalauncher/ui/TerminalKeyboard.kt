@@ -18,8 +18,9 @@
 
 package com.hooloovoochimico.terminalauncher.ui
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,20 +36,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.unit.dp
 import com.hooloovoochimico.terminalauncher.R
 import com.hooloovoochimico.terminalauncher.theme.LocalTermPalette
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+
+/** Tenendo premuto un tasto ripetibile: attesa iniziale, poi un colpo ogni intervallo. */
+private const val REPEAT_INITIAL_DELAY_MS = 400L
+private const val REPEAT_INTERVAL_MS = 55L
 
 /**
  * Tastiera interna sperimentale in Compose, in stile terminale. Sostituisce l'IME di
  * sistema sul campo input del terminale quando attiva dalle impostazioni. Opera su un
  * [TextFieldValue] rispettando il cursore/selezione, così l'editing è coerente col campo.
+ *
+ * Feedback aptico ad ogni pressione e auto-ripetizione tenendo premuto (replica il
+ * comportamento di una tastiera reale: tenere ⌫ cancella lettera per lettera, tenere
+ * una lettera la ripete).
  */
 @Composable
 fun TerminalKeyboard(
@@ -98,10 +114,12 @@ fun TerminalKeyboard(
         }
         keys.forEach { k ->
           val shown = if (!symbols && shift) k.uppercase() else k
-          KeyButton(shown, palette.fg) { type(shown) }
+          KeyButton(shown, palette.fg, repeatable = true) { type(shown) }
         }
         if (i == letterRows.lastIndex || (symbols && i == symbolRows.lastIndex)) {
-          KeyButton("⌫", palette.accent, weight = 1.5f) { onValueChange(value.backspace()) }
+          KeyButton("⌫", palette.accent, weight = 1.5f, repeatable = true) {
+            onValueChange(value.backspace())
+          }
         }
       }
     }
@@ -119,8 +137,8 @@ fun TerminalKeyboard(
         shift = false
       }
       // "/" sempre a portata di mano (comandi tipo /apps) senza passare ai simboli
-      KeyButton("/", palette.fg, weight = 1.2f) { type("/") }
-      KeyButton("·", palette.fg, weight = 3.4f) { type(" ") }
+      KeyButton("/", palette.fg, weight = 1.2f, repeatable = true) { type("/") }
+      KeyButton("·", palette.fg, weight = 3.4f, repeatable = true) { type(" ") }
       KeyButton("⏎", palette.accent, weight = 1.8f) { onSubmit() }
     }
   }
@@ -131,9 +149,14 @@ private fun RowScope.KeyButton(
   label: String,
   color: androidx.compose.ui.graphics.Color,
   weight: Float = 1f,
+  repeatable: Boolean = false,
   onClick: () -> Unit,
 ) {
   val palette = LocalTermPalette.current
+  val view = LocalView.current
+  // il blocco di pointerInput vive oltre le ricomposizioni: senza questo cattura il primo
+  // onClick (con TextFieldValue stantio) e ogni tap reinserirebbe sempre dallo stato iniziale.
+  val currentOnClick by rememberUpdatedState(onClick)
   Text(
     text = label,
     color = color,
@@ -143,7 +166,31 @@ private fun RowScope.KeyButton(
       Modifier.weight(weight)
         .height(42.dp)
         .border(1.dp, palette.dim, RoundedCornerShape(4.dp))
-        .clickable(onClick = onClick)
+        .pointerInput(repeatable) {
+          detectTapGestures(
+            onPress = {
+              // tasto reattivo: agisce e vibra alla pressione (giù), come una tastiera vera
+              view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+              currentOnClick()
+              if (repeatable) {
+                coroutineScope {
+                  val repeater = launch {
+                    delay(REPEAT_INITIAL_DELAY_MS)
+                    while (isActive) {
+                      currentOnClick()
+                      view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+                      delay(REPEAT_INTERVAL_MS)
+                    }
+                  }
+                  tryAwaitRelease()
+                  repeater.cancel()
+                }
+              } else {
+                tryAwaitRelease()
+              }
+            }
+          )
+        }
         .wrapContentHeight(Alignment.CenterVertically),
   )
 }
