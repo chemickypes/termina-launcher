@@ -1,0 +1,19 @@
+Termina Launcher replaces the standard Android home screen with a terminal
+prompt. Everything is a command — distraction-free and keyboard-first, with a
+retro TUI soul.
+
+Features:
+
+* Launch apps by name — just type "chrome", "gmail", "maps"…
+* Browse your phone like a filesystem — ls, cd, cat, find, du, tree…
+* Launcher actions — /battery, /ip, /usage, /torch, /call, /uninstall…
+* Built-in text/markdown viewer and a nano-style editor
+* Bash-style aliases and config in a .terminarc file
+* Command history, file search with a background index
+* Work profile apps support
+* Themes (green / amber / cyan / white), adjustable font scale
+* Optional experimental in-app terminal keyboard
+* Fully offline, no ads, no tracking, no Google Play Services
+
+No app drawer to scroll, no widgets, no clutter — just you and a blinking
+cursor.

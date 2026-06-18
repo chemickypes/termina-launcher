@@ -1,0 +1,1 @@
+A terminal-style home screen: launch apps and browse files by typing.

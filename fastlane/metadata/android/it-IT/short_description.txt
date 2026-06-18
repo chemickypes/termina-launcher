@@ -1,0 +1,1 @@
+Una home screen in stile terminale: avvia app e sfoglia file scrivendo.
