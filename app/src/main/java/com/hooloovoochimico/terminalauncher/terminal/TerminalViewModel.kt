@@ -158,6 +158,32 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
     banner()
     loadRc()
     prewarmIndex()
+    // La lista app si aggiorna da sola su install/disinstallazione (cache invalidata).
+    appRepository.startWatching { onAppsChanged() }
+  }
+
+  override fun onCleared() {
+    appRepository.stopWatching()
+    super.onCleared()
+  }
+
+  /**
+   * Invalidata la cache (app installata/rimossa), ricarica in background ciò che
+   * è già mostrato, senza stampare nulla sul terminale.
+   */
+  private fun onAppsChanged() {
+    loadApps(force = true)
+    if (hasWorkProfile && workAppsList.isNotEmpty()) loadWorkApps(force = true)
+  }
+
+  /** `/apps [-r|--refresh]`: apre la schermata APP; con -r/--refresh rilegge prima la lista. */
+  private fun openApps(arg: String) {
+    val a = arg.trim().lowercase()
+    if (a == "-r" || a == "--refresh") {
+      loadApps(force = true)
+      if (hasWorkProfile && workAppsList.isNotEmpty()) loadWorkApps(force = true)
+    }
+    screen = TermScreen.APPS
   }
 
   // ─── .terminarc / alias ────────────────────────────────────────
@@ -689,7 +715,7 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
       "/help" -> help()
       "/handbook", "/man" -> openManual()
       "/launch" -> launch(arg)
-      "/apps" -> screen = TermScreen.APPS
+      "/apps" -> openApps(arg)
       "/contacts", "/contatti" -> screen = TermScreen.CONTACTS
       "/settings" -> screen = TermScreen.SETTINGS
       "/battery" -> printAll(sysInfo.battery())

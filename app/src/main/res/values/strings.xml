@@ -12,7 +12,7 @@
     <string name="u_help">/help</string>
     <string name="u_handbook">/handbook</string>
     <string name="u_launch">/launch &lt;name&gt;</string>
-    <string name="u_apps">/apps</string>
+    <string name="u_apps">/apps [-r]</string>
     <string name="u_contacts">/contacts</string>
     <string name="u_settings">/settings</string>
     <string name="u_battery">/battery</string>

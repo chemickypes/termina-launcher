@@ -22,6 +22,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.os.Handler
+import android.os.Looper
 import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
@@ -44,8 +46,12 @@ class AppRepository(private val context: Context) {
   @Volatile private var cache: List<AppEntry> = emptyList()
   @Volatile private var workCache: List<AppEntry> = emptyList()
 
-  private val launcherApps: LauncherApps
-    get() = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+  // Istanza unica: register/unregister del callback devono avvenire sullo stesso oggetto.
+  private val launcherApps: LauncherApps by lazy {
+    context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+  }
+
+  private var launcherCallback: LauncherApps.Callback? = null
 
   private val userManager: UserManager
     get() = context.getSystemService(Context.USER_SERVICE) as UserManager
@@ -58,6 +64,49 @@ class AppRepository(private val context: Context) {
 
   /** True se esiste almeno un profilo di lavoro sul dispositivo. */
   fun hasWorkProfile(): Boolean = workProfiles().isNotEmpty()
+
+  /**
+   * Inizia ad osservare installazioni/disinstallazioni/aggiornamenti via
+   * [LauncherApps.Callback]: invalida la cache del profilo interessato e chiama
+   * [onChanged] (sul main thread) così la UI può ricaricarsi. Idempotente.
+   */
+  fun startWatching(onChanged: () -> Unit) {
+    if (launcherCallback != null) return
+    val main = Process.myUserHandle()
+    val cb =
+      object : LauncherApps.Callback() {
+        private fun invalidate(user: UserHandle?) {
+          if (user == null || user == main) cache = emptyList() else workCache = emptyList()
+          onChanged()
+        }
+
+        override fun onPackageRemoved(packageName: String?, user: UserHandle?) = invalidate(user)
+
+        override fun onPackageAdded(packageName: String?, user: UserHandle?) = invalidate(user)
+
+        override fun onPackageChanged(packageName: String?, user: UserHandle?) = invalidate(user)
+
+        override fun onPackagesAvailable(
+          packageNames: Array<out String>?,
+          user: UserHandle?,
+          replacing: Boolean,
+        ) = invalidate(user)
+
+        override fun onPackagesUnavailable(
+          packageNames: Array<out String>?,
+          user: UserHandle?,
+          replacing: Boolean,
+        ) = invalidate(user)
+      }
+    runCatching { launcherApps.registerCallback(cb, Handler(Looper.getMainLooper())) }
+    launcherCallback = cb
+  }
+
+  /** Smette di osservare (da chiamare in onCleared per non perdere il callback). */
+  fun stopWatching() {
+    launcherCallback?.let { cb -> runCatching { launcherApps.unregisterCallback(cb) } }
+    launcherCallback = null
+  }
 
   fun apps(forceRefresh: Boolean = false): List<AppEntry> {
     if (cache.isEmpty() || forceRefresh) {
