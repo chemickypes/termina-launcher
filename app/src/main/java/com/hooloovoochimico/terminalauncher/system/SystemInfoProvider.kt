@@ -181,6 +181,13 @@ class SystemInfoProvider(private val context: Context) {
     // sommando gli eventi foreground/background dentro [start, now].
     val totals = HashMap<String, Long>()
     val fgStart = HashMap<String, Long>() // package → istante in cui è passato in foreground
+    // MOVE_TO_FOREGROUND/BACKGROUND sono in realtà ACTIVITY_RESUMED/PAUSED: eventi per-activity,
+    // non per-app, quindi NON arrivano in coppie pulite. Un background "spaiato" (senza foreground
+    // corrispondente nella finestra) va contato da mezzanotte SOLO se è il primissimo evento che
+    // vediamo per quel package — cioè l'app era già aperta prima di mezzanotte. Per i background
+    // spaiati successivi non contiamo nulla, altrimenti ripartiremmo ogni volta da mezzanotte
+    // sommando intervalli sovrapposti e gonfiando il totale oltre le 24h.
+    val seen = HashSet<String>()
     val events = usm.queryEvents(start, now)
     val ev = UsageEvents.Event()
     while (events.hasNextEvent()) {
@@ -189,19 +196,23 @@ class SystemInfoProvider(private val context: Context) {
       when (ev.eventType) {
         UsageEvents.Event.MOVE_TO_FOREGROUND -> fgStart[pkg] = ev.timeStamp
         UsageEvents.Event.MOVE_TO_BACKGROUND -> {
-          // se non abbiamo visto il foreground (app già aperta prima di mezzanotte),
-          // conta dal momento "start" (mezzanotte) fino a questo background.
-          val from = fgStart.remove(pkg) ?: start
+          val from = fgStart.remove(pkg) ?: if (pkg !in seen) start else continue
           val dur = ev.timeStamp - from
           if (dur > 0) totals[pkg] = (totals[pkg] ?: 0L) + dur
         }
       }
+      seen += pkg
     }
     // app ancora in foreground adesso: conta fino a ora.
     fgStart.forEach { (pkg, from) ->
       val dur = now - from
       if (dur > 0) totals[pkg] = (totals[pkg] ?: 0L) + dur
     }
+    // Il tempo speso dentro TerminaLauncher non conta: lo escludiamo dal totale e dalla lista.
+    totals.remove(context.packageName)
+    // Rete di sicurezza: nessuna app può aver usato più del tempo trascorso da mezzanotte.
+    val elapsed = now - start
+    totals.replaceAll { _, ms -> ms.coerceAtMost(elapsed) }
     if (totals.isEmpty()) return listOf(str(R.string.usage_none))
     val top = totals.entries.sortedByDescending { it.value }.take(limit)
     val grand = totals.values.sum()

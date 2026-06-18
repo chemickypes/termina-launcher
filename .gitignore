@@ -18,3 +18,5 @@ local.properties
 /new_ideas.md
 # output generato del tool icona (le icone sono già copiate in app/src/main/res)
 /IconKitchen-Output/
+# istruzioni F-Droid (note locali, non versionate)
+/fdroid-instruction.md
