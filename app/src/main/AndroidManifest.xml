@@ -10,10 +10,9 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-    <!-- accesso completo ai file per i comandi unix (sbloccato col comando 'sudo') -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <!-- NB: MANAGE_EXTERNAL_STORAGE (accesso completo ai file, comando 'sudo') è
+         dichiarato SOLO nella flavor `foss` (src/foss/AndroidManifest.xml) perché
+         Google Play non lo concede a un launcher. -->
 
     <!-- necessario per elencare tutte le app avviabili (API 30+) -->
     <queries>

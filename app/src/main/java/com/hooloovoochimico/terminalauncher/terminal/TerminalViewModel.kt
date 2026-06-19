@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.hooloovoochimico.terminalauncher.BuildConfig
 import com.hooloovoochimico.terminalauncher.R
 import com.hooloovoochimico.terminalauncher.system.AppEntry
 import com.hooloovoochimico.terminalauncher.system.AppRepository
@@ -495,6 +496,16 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
     screen = TermScreen.TERMINAL
   }
 
+  // ─── pagina info / crediti (versione, licenza, link al progetto) ───────────
+
+  fun openAbout() {
+    screen = TermScreen.ABOUT
+  }
+
+  fun closeAbout() {
+    screen = TermScreen.TERMINAL
+  }
+
   /** Tap su una voce: torna al terminale e riesegue subito il comando. */
   fun runFromHistory(cmd: String) {
     historyActionTarget = null
@@ -643,9 +654,15 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   private fun str(@StringRes id: Int, vararg args: Any): String = context.getString(id, *args)
 
   private fun banner() {
-    out("╔════════════════════════════╗", LineKind.ACCENT)
-    out("║   TERMINA LAUNCHER v1.0    ║", LineKind.ACCENT)
-    out("╚════════════════════════════╝", LineKind.ACCENT)
+    // versione completa (con patch) + marcatore -COMPLETE nell'edizione sbloccata
+    // (build foss, FULL_ACCESS); box ridimensionato dinamicamente sul titolo.
+    val edition = if (BuildConfig.FULL_ACCESS) "-COMPLETE" else ""
+    val title = "TERMINA LAUNCHER v${BuildConfig.VERSION_NAME}$edition"
+    val pad = 1
+    val inner = title.length + pad * 2
+    out("╔" + "═".repeat(inner) + "╗", LineKind.ACCENT)
+    out("║" + " ".repeat(pad) + title + " ".repeat(pad) + "║", LineKind.ACCENT)
+    out("╚" + "═".repeat(inner) + "╝", LineKind.ACCENT)
     out(str(R.string.banner_hint))
     out("")
   }
@@ -872,6 +889,12 @@ class TerminalViewModel(app: Application) : AndroidViewModel(app) {
   }
 
   private fun sudo() {
+    // Nella distribuzione Play l'accesso completo non esiste (niente
+    // MANAGE_EXTERNAL_STORAGE): rimanda all'edizione open source via /about.
+    if (!BuildConfig.FULL_ACCESS) {
+      out(str(R.string.sudo_play_edition))
+      return
+    }
     if (fs.hasFullAccess) {
       out(str(R.string.sudo_already, fs.home.path))
       return

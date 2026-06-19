@@ -300,6 +300,19 @@
     <string name="set_config_detail">alias e configurazione</string>
     <string name="set_keyboard">tastiera interna: %1$s</string>
     <string name="set_keyboard_detail">sperimentale — sostituisce la tastiera di sistema</string>
+    <string name="set_about">info / crediti</string>
+    <string name="set_about_detail">versione, licenza, codice sorgente</string>
+
+    <!-- pagina info / crediti -->
+    <string name="about_title">INFO</string>
+    <string name="about_footer">tocca ESC per tornare</string>
+    <string name="about_version">versione %1$s (build %2$d)</string>
+    <string name="about_author">di Angelo Moroni</string>
+    <string name="about_license">licenza: GPL-3.0-or-later</string>
+    <string name="about_credits">realizzato con Kotlin e Jetpack Compose</string>
+    <string name="about_link">progetto e codice sorgente</string>
+    <string name="about_url">https://github.com/chemickypes/termina-launcher</string>
+    <string name="sudo_play_edition">l\'accesso completo al filesystem è solo nell\'edizione open source — digita /about per il link al progetto</string>
     <string name="kb_on">on</string>
     <string name="kb_off">off</string>
     <string name="kb_symbols">\?123</string>

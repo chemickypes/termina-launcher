@@ -109,6 +109,15 @@ fun SettingsScreen(vm: TerminalViewModel, onBack: () -> Unit) {
         }
       }
       item {
+        TuiRow(
+          index = null,
+          text = stringResource(R.string.set_about),
+          detail = stringResource(R.string.set_about_detail),
+        ) {
+          vm.openAbout()
+        }
+      }
+      item {
         Text(
           text = "│ ─── ${stringResource(R.string.sec_system)} ───",
           color = palette.dim,

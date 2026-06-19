@@ -40,6 +40,7 @@ enum class TermScreen {
   MANUAL,
   VIEWER,
   HISTORY,
+  ABOUT,
 }
 
 data class CommandSpec(

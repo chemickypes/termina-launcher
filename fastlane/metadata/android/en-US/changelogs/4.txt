@@ -1,0 +1,3 @@
+- New info/credits page in Settings (version, license, source code link).
+- Version banner now shows the full version number, with a -COMPLETE marker on the full edition.
+- Internal: separate build flavors for F-Droid (full file access) and Google Play.

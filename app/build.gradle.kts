@@ -11,8 +11,23 @@ android {
         applicationId = "com.hooloovoochimico.terminalauncher"
         minSdk = 24
         targetSdk = 36
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.1.0"
+    }
+
+    // Due distribuzioni: `foss` (F-Droid, accesso completo al filesystem via sudo)
+    // e `play` (Google Play, confinata alla cartella dell'app — niente
+    // MANAGE_EXTERNAL_STORAGE, che Play non concede a un launcher).
+    flavorDimensions += "dist"
+    productFlavors {
+        create("foss") {
+            dimension = "dist"
+            buildConfigField("boolean", "FULL_ACCESS", "true")
+        }
+        create("play") {
+            dimension = "dist"
+            buildConfigField("boolean", "FULL_ACCESS", "false")
+        }
     }
 
     buildTypes {
@@ -28,7 +43,7 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 

@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hooloovoochimico.terminalauncher.terminal.TermScreen
 import com.hooloovoochimico.terminalauncher.terminal.TerminalViewModel
 import com.hooloovoochimico.terminalauncher.theme.TerminaLauncherTheme
+import com.hooloovoochimico.terminalauncher.ui.AboutScreen
 import com.hooloovoochimico.terminalauncher.ui.AppsScreen
 import com.hooloovoochimico.terminalauncher.ui.ContactsScreen
 import com.hooloovoochimico.terminalauncher.ui.EditorScreen
@@ -115,6 +116,7 @@ fun TerminaApp(vm: TerminalViewModel = viewModel()) {
           TermScreen.MANUAL -> ManualScreen(vm) { vm.closeManual() }
           TermScreen.VIEWER -> FileViewerScreen(vm) { vm.closeViewer() }
           TermScreen.HISTORY -> HistoryScreen(vm) { vm.closeHistory() }
+          TermScreen.ABOUT -> AboutScreen(vm) { vm.closeAbout() }
         }
         // countdown puramente visivo (nessun pointerInput → non intercetta i tap)
         RecoveryOverlay(recovery)

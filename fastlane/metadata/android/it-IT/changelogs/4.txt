@@ -1,0 +1,3 @@
+- Nuova pagina info/crediti nelle Impostazioni (versione, licenza, link al codice sorgente).
+- Il banner mostra ora il numero di versione completo, con il marcatore -COMPLETE sull'edizione completa.
+- Interno: build separate per F-Droid (accesso completo ai file) e Google Play.

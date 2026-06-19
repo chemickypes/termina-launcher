@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Accesso completo ai file per i comandi unix (sbloccato col comando 'sudo').
+         Esclusivo della distribuzione F-Droid: Google Play non concede questo
+         permesso speciale a un launcher, quindi la flavor `play` ne è priva e resta
+         confinata alla cartella dell'app. -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+</manifest>
