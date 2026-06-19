@@ -21,8 +21,8 @@ android {
         applicationId = "com.hooloovoochimico.terminalauncher"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.1.0"
+        versionCode = 5
+        versionName = "1.1.1"
     }
 
     signingConfigs {
@@ -53,10 +53,16 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // firma solo se keystore.properties è presente (altrimenti build non firmata)
             signingConfig = signingConfigs.findByName("release")
+            // simboli di debug nativi (per le .so transitive, es. androidx.graphics.path):
+            // vengono inclusi nell'AAB e risolvono l'avviso "native debug symbols" di Play.
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
