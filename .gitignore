@@ -20,3 +20,8 @@ local.properties
 /IconKitchen-Output/
 # istruzioni F-Droid (note locali, non versionate)
 /fdroid-instruction.md
+
+# firma di release: keystore e password NON vanno mai versionati
+*.jks
+*.keystore
+/keystore.properties

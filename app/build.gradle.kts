@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
+}
+
+// Carica le credenziali di firma da keystore.properties (radice del progetto,
+// NON versionato). Se il file manca (es. macchina di un contributor o build
+// F-Droid) la firma di release viene semplicemente saltata.
+val keystorePropsFile = rootProject.file("keystore.properties")
+val keystoreProps = Properties().apply {
+    if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
 }
 
 android {
@@ -13,6 +23,17 @@ android {
         targetSdk = 36
         versionCode = 4
         versionName = "1.1.0"
+    }
+
+    signingConfigs {
+        if (keystorePropsFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
     }
 
     // Due distribuzioni: `foss` (F-Droid, accesso completo al filesystem via sudo)
@@ -34,6 +55,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // firma solo se keystore.properties è presente (altrimenti build non firmata)
+            signingConfig = signingConfigs.findByName("release")
         }
     }
     compileOptions {
