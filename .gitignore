@@ -25,4 +25,9 @@ local.properties
 *.jks
 *.keystore
 /keystore.properties
-/keystore.properties.example
+# il template SENZA segreti va invece versionato:
+!/keystore.properties.example
+
+# macOS junk
+__MACOSX/
+.DS_Store
