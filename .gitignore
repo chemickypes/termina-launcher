@@ -31,3 +31,8 @@ local.properties
 # macOS junk
 __MACOSX/
 .DS_Store
+
+# IDE, log e repository locale
+.idea/
+logs/
+repo/

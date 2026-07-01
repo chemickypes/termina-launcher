@@ -81,6 +81,15 @@ android {
         excludes += "/META-INF/{AL2.0,LGPL2.1}"
       }
     }
+
+    // I test locali girano su JVM con Robolectric: servono le risorse Android
+    // (getString ecc.) impacchettate e il framework Android emulato.
+    testOptions {
+      unitTests {
+        isIncludeAndroidResources = true
+        isReturnDefaultValues = true
+      }
+    }
 }
 
 kotlin {
@@ -113,9 +122,16 @@ dependencies {
   androidTestImplementation(libs.androidx.compose.ui.test.junit4)
   debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-  // Local tests: jUnit, coroutines, Android runner
+  // Local tests: jUnit, coroutines, Robolectric (Context Android su JVM)
   testImplementation(libs.junit)
   testImplementation(libs.kotlinx.coroutines.test)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.androidx.test.ext.junit)
+  // Test UI Compose che girano su JVM sotto Robolectric
+  testImplementation(composeBom)
+  testImplementation(libs.androidx.compose.ui.test.junit4)
+  testImplementation(libs.androidx.compose.ui.test.manifest)
 
   // Instrumented tests: jUnit rules and runners
   androidTestImplementation(libs.androidx.test.core)
