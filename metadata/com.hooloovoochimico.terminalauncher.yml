@@ -1,0 +1,34 @@
+Categories:
+  - Launcher
+  - System
+License: GPL-3.0-or-later
+AuthorName: chemickypes
+WebSite: https://github.com/chemickypes/termina-launcher
+SourceCode: https://github.com/chemickypes/termina-launcher
+IssueTracker: https://github.com/chemickypes/termina-launcher/issues
+
+AutoName: Termina Launcher
+Summary: Terminal-style home screen launcher
+
+RepoType: git
+Repo: https://github.com/chemickypes/termina-launcher.git
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.0
+    subdir: app
+    gradle:
+      - yes
+
+  - versionName: 1.1.1
+    versionCode: 5
+    commit: v1.1.1
+    subdir: app
+    gradle:
+      - foss
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.1.1
+CurrentVersionCode: 5
