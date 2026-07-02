@@ -36,3 +36,7 @@ __MACOSX/
 .idea/
 logs/
 repo/
+
+# output di fdroid build (APK non firmati) e config locale fdroidserver
+/unsigned/
+/config.yml
